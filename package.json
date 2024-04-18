@@ -1,0 +1,62 @@
+{
+  "name": "hivelib",
+  "version": "0.0.1",
+  "description": "HiveLib simplifies SSH2 connections via promise-based task execution on Linux servers with built-in server utilities and powerful command execution functions",
+  "main": "dist/index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node --enable-source-maps dist/index.js",
+    "build": "tsc",
+    "exec": "tsc && node --enable-source-maps dist/index.js",
+    "dev": "nodemon -w ./src --ext *.ts -x \"tsc && node --enable-source-maps dist/index.js\""
+  },
+  "keywords": [
+    "lib",
+    "library",
+    "ssh2",
+    "sftp",
+    "typescript",
+    "auto",
+    "automation",
+    "orch",
+    "orchestrating",
+    "orchestration",
+    "configuring",
+    "configuration",
+    "managing",
+    "manage",
+    "promise",
+    "async",
+    "tool",
+    "open-source",
+    "hive",
+    "linux",
+    "ansible"
+  ],
+  "author": {
+    "name": "Majo Richter",
+    "alias": "NobleMajo",
+    "email": "majo@coreunit.net",
+    "url": "https://github.com/NobleMajo"
+  },
+  "os": [
+    "!win32"
+  ],
+  "homepage": "https://github.com/NobleMajo/hivelib",
+  "bugs": {
+    "url": "https://github.com/NobleMajo/hivelib/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:NobleMajo/hivelib.git"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "^5.4.3",
+    "@types/ssh2": "^1.15.0",
+    "nodemon": "^3.1.0"
+  },
+  "dependencies": {
+    "ssh2": "^1.15.0"
+  }
+}
