@@ -52,9 +52,10 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "typescript": "^5.4.3",
+    "@types/node": "^20.12.7",
     "@types/ssh2": "^1.15.0",
-    "nodemon": "^3.1.0"
+    "nodemon": "^3.1.0",
+    "typescript": "^5.4.3"
   },
   "dependencies": {
     "ssh2": "^1.15.0"

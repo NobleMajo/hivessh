@@ -8,7 +8,8 @@ export function createClient(
         const hopClient = new SshClient()
 
         hopClient.on("ready", () => res(hopClient))
-        hopClient.on("error", rej)
+        hopClient.on("error", (err) => rej(err))
+
         hopClient.connect({
             ...settings,
             host: settings.sock ? undefined : settings.host,

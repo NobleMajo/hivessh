@@ -1,7 +1,7 @@
 import { SshChannelExit, StreamDataMapper } from "../SshExec.js"
 import { SshHost } from "../SshHost.js"
 import { Awaitable, filterEmpty } from "../utils/base.js"
-import { AbstractPackage, AbstractPackageManager, PmInit } from "./PackageManager.js"
+import { AbstractPackage, AbstractPackageManager, ApmInit } from "./PackageManager.js"
 
 export const yumEnv = {
     LANG: "en_US.UTF-8"
@@ -51,7 +51,7 @@ export const parseYumDescription = (exit: SshChannelExit): AbstractPackage => {
     }
 }
 
-export const initYumPm: PmInit = (
+export const initYumApm: ApmInit = (
     sshHost: SshHost,
     cmdTimeoutMillis?: number | undefined,
 ): Awaitable<AbstractPackageManager> => {

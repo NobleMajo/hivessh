@@ -8,10 +8,10 @@
     ],
     "allowJs": false,
     "resolveJsonModule": false,
-    "declaration": true,
-    "declarationMap": true,
-    "inlineSourceMap": true,
-    "inlineSources": true,
+    "declaration": true, // emit .d.ts files
+    "inlineSourceMap": true, // emit .js.map files
+    "declarationMap": true, // emit .d.ts.map files
+    "inlineSources": true, // emit inline source map in .d.ts and .js files
     "removeComments": false,
     "outDir": "dist",
     "rootDir": "src",

@@ -1,7 +1,7 @@
 import { SshChannelExit, StreamDataMapper } from "../SshExec.js"
 import { SshHost } from "../SshHost.js"
 import { Awaitable, trimAll } from "../utils/base.js"
-import { AbstractPackage, AbstractPackageManager, PmInit } from "./PackageManager.js"
+import { AbstractPackage, AbstractPackageManager, ApmInit } from "./PackageManager.js"
 
 export const aptEnv = {
     "LANG": "en_US.UTF-8",
@@ -99,7 +99,7 @@ export const parsePackageDescription = (
     }
 }
 
-export const initAptPm: PmInit = (
+export const initAptApm: ApmInit = (
     sshHost: SshHost,
     cmdTimeoutMillis?: number | undefined
 ): Awaitable<AbstractPackageManager> => {
@@ -108,28 +108,24 @@ export const initAptPm: PmInit = (
         sshHost,
 
         //### cache
-        updateCache: async () => {
-            return sshHost.exec(
-                "apt-get update",
-                {
-                    sudo: true,
-                    timeoutMillis: cmdTimeoutMillis,
-                    mapErrOut: ignoreMessageFilter,
-                    env: aptEnv,
-                }
-            ).then()
-        },
-        clearCache: async () => {
-            return sshHost.exec(
-                "apt-get clean",
-                {
-                    sudo: true,
-                    timeoutMillis: cmdTimeoutMillis,
-                    mapErrOut: ignoreMessageFilter,
-                    env: aptEnv,
-                }
-            ).then()
-        },
+        updateCache: () => sshHost.exec(
+            "apt-get update",
+            {
+                sudo: true,
+                timeoutMillis: cmdTimeoutMillis,
+                mapErrOut: ignoreMessageFilter,
+                env: aptEnv,
+            }
+        ).then(),
+        clearCache: () => sshHost.exec(
+            "apt-get clean",
+            {
+                sudo: true,
+                timeoutMillis: cmdTimeoutMillis,
+                mapErrOut: ignoreMessageFilter,
+                env: aptEnv,
+            }
+        ).then(),
 
         //### edit
         install: (...pkgs: string[]) =>

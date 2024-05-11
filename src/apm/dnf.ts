@@ -1,7 +1,7 @@
 import { SshChannelExit, StreamDataMapper } from "../SshExec.js"
 import { SshHost } from "../SshHost.js"
 import { Awaitable, filterEmpty } from "../utils/base.js"
-import { AbstractPackage, AbstractPackageManager, PmInit } from "./PackageManager.js"
+import { AbstractPackage, AbstractPackageManager, ApmInit } from "./PackageManager.js"
 
 export const dnfEnv = {
     LANG: "en_US.UTF-8"
@@ -58,7 +58,7 @@ export const parseDnfDescription = (
     }
 }
 
-export const initDnfPm: PmInit = (
+export const initDnfApm: ApmInit = (
     sshHost: SshHost,
     cmdTimeoutMillis?: number | undefined,
 ): Awaitable<AbstractPackageManager> => {

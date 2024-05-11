@@ -65,11 +65,13 @@ export function toSshChannel(
     channel: ClientChannel,
     extras: SshChannelExtras,
 ): SshChannel {
-    for (const key of Object.keys(extras) as (keyof SshChannelExtras)[]) {
-        (channel as any)[key] = extras[key]
+    const sshChannel = channel as any
+
+    for (const key of Object.typedKeys(extras)) {
+        sshChannel[key] = extras[key]
     }
 
-    return channel as any
+    return sshChannel
 }
 
 export async function execSshChannel(
@@ -95,7 +97,10 @@ export async function execSshChannel(
         (res, rej) => sshClient.exec(
             cmd,
             settings,
-            (err, channel) => err ? rej(err) : res(channel)
+            (err, channel) =>
+                err ?
+                    rej(err) :
+                    res(channel)
         )
     )
 
@@ -116,17 +121,23 @@ export async function execSshChannel(
         typeof settings.timeoutMillis == "number" &&
         settings.timeoutMillis > 0
     ) {
+
         channel.timeout = setTimeout(
             () => {
                 if (!channel.closed) {
-                    channel.close("Timeout", settings.timeoutMillis)
+                    channel.close(
+                        "Timeout",
+                        settings.timeoutMillis
+                    )
                 }
             },
             settings.timeoutMillis
         )
         channel.once(
             "close",
-            () => clearTimeout(channel.timeout)
+            () => clearTimeout(
+                channel.timeout
+            )
         )
     }
 
@@ -193,6 +204,17 @@ export const defaultChannelToPromiseSettings: ChannelToPromiseSettings = {
     expectedExitCode: [0],
 }
 
+export function checkDataChunk(chunk: any): string {
+    if (chunk instanceof Buffer) {
+        return chunk.toString("utf8")
+    } else if (typeof chunk != "string") {
+        throw new Error(
+            "Unexpected chunk type: '" + typeof chunk + "'\n" +
+            "Value: '" + chunk + "'"
+        )
+    }
+    return chunk
+}
 
 export function sshChannelToPromise(
     channel: ClientChannel,
@@ -200,7 +222,28 @@ export function sshChannelToPromise(
 ): SshChannelToPromise {
     return (
         options?: ChannelToPromiseOptions
-    ) => new Promise<SshChannelExit>((res, rej) => {
+    ) => {
+        let resolved: boolean = false
+        let resolveValue: SshChannelExit | PromiseLike<SshChannelExit>
+
+        let rejected: boolean = false
+        let rejectReason: any
+
+        let res: (value: SshChannelExit | PromiseLike<SshChannelExit>) => void = (value) => {
+            if (rejected || resolved) {
+                return
+            }
+            resolved = true
+            resolveValue = value
+        }
+        let rej: (reason?: any) => void = (reason) => {
+            if (rejected || resolved) {
+                return
+            }
+            rejected = true
+            rejectReason = reason
+        }
+
         const settings: ChannelToPromiseSettings = {
             ...defaultChannelToPromiseSettings,
             ...options,
@@ -262,6 +305,7 @@ export function sshChannelToPromise(
             if (settings.mapStdOut) {
                 const mapStdOut = settings.mapStdOut
                 stdout.on("data", (chunk) => {
+                    chunk = checkDataChunk(chunk)
                     chunk = mapStdOut(chunk, false)
                     if (typeof chunk == "string") {
                         chunks.push([false, "" + chunk])
@@ -269,6 +313,7 @@ export function sshChannelToPromise(
                 })
             } else {
                 stdout.on("data", (chunk) => {
+                    chunk = checkDataChunk(chunk)
                     chunks.push([false, "" + chunk])
                 })
             }
@@ -276,6 +321,7 @@ export function sshChannelToPromise(
             if (settings.mapErrOut) {
                 const mapErrOut = settings.mapErrOut
                 stderr.on("data", (chunk) => {
+                    chunk = checkDataChunk(chunk)
                     chunk = mapErrOut(chunk, true)
                     if (typeof chunk == "string") {
                         chunks.push([true, "" + chunk])
@@ -283,24 +329,27 @@ export function sshChannelToPromise(
                 })
             } else {
                 stderr.on("data", (chunk) => {
+                    chunk = checkDataChunk(chunk)
                     chunks.push([true, "" + chunk])
                 })
             }
         } else {
             stdout.on("data", (chunk) => {
+                chunk = checkDataChunk(chunk)
                 chunks.push([false, "" + chunk])
             })
 
             stderr.on("data", (chunk) => {
+                chunk = checkDataChunk(chunk)
                 chunks.push([true, "" + chunk])
             })
         }
 
-        stdout.once("data", () => {
+        stdout.on("data", () => {
             anyStd = true
         })
 
-        stderr.once("data", () => {
+        stderr.on("data", () => {
             anyErr = true
         })
 
@@ -312,6 +361,11 @@ export function sshChannelToPromise(
                     channel.close()
                 }
             }
+        )
+
+        channel.once(
+            "close",
+            () => rej(new Error("Ssh channel closed, check why the socket was closed or lost connection"))
         )
 
         channel.once("exit", (
@@ -368,5 +422,21 @@ export function sshChannelToPromise(
 
             res(exit)
         })
-    })
+
+
+        return new Promise<SshChannelExit>(
+            (res2, rej2) => {
+                if (resolved) {
+                    res2(resolveValue)
+                    return
+                } else if (rejected) {
+                    rej2(rejectReason)
+                    return
+                }
+
+                res = res2
+                rej = rej2
+            }
+        )
+    }
 }

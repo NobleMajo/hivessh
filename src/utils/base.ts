@@ -14,6 +14,36 @@ export interface JsonObject {
     [key: string]: JsonType
 }
 
+export type MapObject<V, K extends string = string> = {
+    [key in K]: V
+}
+
+declare global {
+    interface ObjectConstructor {
+        typedKeys<
+            O extends object
+        >(
+            o: O
+        ): (keyof O)[]
+
+        typedValues<
+            O extends object
+        >(
+            o: O
+        ): O[keyof O]
+
+        typedEntries<
+            O extends object
+        >(
+            o: O
+        ): [keyof O, O[keyof O]][]
+    }
+}
+
+Object.typedKeys = Object.keys
+Object.typedValues = Object.values
+Object.typedEntries = Object.entries
+
 export type FileType = "file" | "dir" | "none"
 export const getFileType = async (
     path: string
@@ -68,6 +98,10 @@ export async function pathType(
 export function trimAll(
     value: string
 ): string {
+    if (typeof value != "string") {
+        throw new Error("Value is not a string")
+    }
+
     while (
         value.startsWith("\n") ||
         value.startsWith("\t") ||
@@ -92,4 +126,92 @@ export function filterEmpty(
     return arr
         .map(trimAll)
         .filter((v) => v.length != 0)
+}
+
+
+/**
+ * 
+ * @param base Base reference object for the merge
+ * @param overwrite Overwrite object that overwrites the values in the base object
+ * @returns Merged object of both objects
+ */
+export function deepMergeObject<O1 extends MapObject<any>, O2 extends MapObject<any>>(
+    base: O1,
+    overwrite: O2,
+    cloneBase: boolean = true,
+): O1 & O2 {
+    const ret: MapObject<any> = cloneObject(base)
+
+    for (const key of Object.keys(overwrite)) {
+        if (
+            typeof base[key] == "object" &&
+            base[key] !== null &&
+            !Array.isArray(base[key])
+        ) {
+            ret[key] = deepMergeObject(
+                base[key],
+                overwrite[key]
+            )
+        } else {
+            ret[key] = overwrite[key]
+        }
+    }
+
+    return ret as any
+}
+
+/**
+ * 
+ * @param base Base object to clone
+ * @returns Clone of the base object
+ */
+export function cloneObject<O extends MapObject<any>>(
+    base: O,
+): O {
+    const ret: MapObject<any> = {}
+
+    for (const key of Object.keys(base)) {
+        if (
+            typeof base[key] == "object" &&
+            base[key] !== null
+        ) {
+            if (Array.isArray(base[key])) {
+                ret[key] = cloneArray(base[key])
+            } else {
+                ret[key] = cloneObject(base[key])
+            }
+        } else {
+            ret[key] = base[key]
+        }
+    }
+
+    return ret as any
+}
+
+/**
+ * 
+ * @param base Base array to clone
+ * @returns Clone of the base array
+ */
+export function cloneArray<A extends any[]>(
+    base: A,
+): A {
+    const ret: any[] = []
+
+    for (const value of base) {
+        if (
+            typeof value == "object" &&
+            value !== null
+        ) {
+            if (Array.isArray(value)) {
+                ret.push(cloneArray(value))
+            } else {
+                ret.push(cloneObject(value))
+            }
+        } else {
+            ret.push(value)
+        }
+    }
+
+    return ret as any
 }

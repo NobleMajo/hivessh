@@ -1,5 +1,6 @@
 import { promises as afs } from "fs"
 import { ConnectConfig } from "ssh2"
+import { HostId, parseHostId } from "./HostId.js"
 import { pathType } from "./utils/base.js"
 
 export type Ssh2SshOptions = Omit<ConnectConfig, "host" | "port" | "user" | "passphrase" | "privateKey" | "passphrase" | "password">
@@ -26,35 +27,39 @@ export interface SshHostBaseSettings {
     hops: HopHostSettings[] | undefined,
 }
 
+
 export type SshHostOptions = SshHostBaseOptions & Ssh2SshOptions
 export type SshHostTargetSettings =
     Omit<SshHostBaseSettings, "hops"> &
     Pick<SshHostBaseOptions, "hops"> &
-    Ssh2SshOptions
-export type SshHostSettings = SshHostBaseSettings & Ssh2SshOptions
+    Ssh2SshOptions & {
+        id: HostId,
+    }
+export type SshHostSettings = SshHostBaseSettings & Ssh2SshOptions & {
+    id: HostId,
+}
 
-export type HopHostOptions = Omit<SshHostOptions, "hops">
-export type HopHostSettings = Omit<SshHostSettings, "hops">
+export type HopHostOptions = Omit<SshHostOptions, "hops" | "id">
+export type HopHostSettings = Omit<SshHostSettings, "hops" | "id">
 
 export const defaultSshHostSettings: SshHostSettings = {
     host: undefined as any,
     port: 22,
     user: "root",
     hops: undefined,
+    id: undefined as any,
     readyTimeout: 1000 * 8,
 }
 
 export function completeTargetSettings(
     options: SshHostOptions
 ): SshHostTargetSettings {
-    const ret: SshHostTargetSettings = {
+    return {
         ...defaultSshHostSettings,
         ...options,
+        id: parseHostId(options),
     }
-
-    return ret
 }
-
 
 export async function loadSettings(
     options: SshHostOptions
@@ -70,18 +75,18 @@ export async function loadSettings(
     }
 
     if (
-        typeof options.privateKey != "string" &&
-        typeof options.privateKeyPath == "string"
+        typeof ret.privateKey != "string" &&
+        typeof ret.privateKeyPath == "string"
     ) {
-        if ((await pathType(options.privateKeyPath)) != "FILE") {
+        if ((await pathType(ret.privateKeyPath)) != "FILE") {
             throw new Error(
                 "Private key not exist at '" +
-                options.privateKeyPath + "'"
+                ret.privateKeyPath + "'"
             )
         }
 
-        options.privateKey = await afs.readFile(
-            options.privateKeyPath,
+        ret.privateKey = await afs.readFile(
+            ret.privateKeyPath,
             {
                 encoding: "utf8"
             }

@@ -2,13 +2,13 @@ import { ClientErrorExtensions, SFTPWrapper, Client as SshClient } from "ssh2"
 import { handleHops } from "./HostHop.js"
 import { CmdChannelOptions, CmdExecOptions, SshChannel, SshChannelExit, execSshChannel } from "./SshExec.js"
 import { SshHostOptions, SshHostSettings, loadSettings } from "./SshHostOptions.js"
+import { AbstractPackageManager, getApm } from "./apm/PackageManager.js"
 import { OsRelease, fetchOsRelease } from "./essentials/OsRelease.js"
 import { SFTPPromiseWrapper, createSFTPPromiseWrapper } from "./essentials/SftpPromiseWrapper.js"
-import { AbstractPackageManager, getPm } from "./pm/PackageManager.js"
 import { Awaitable } from "./utils/base.js"
 
 export class SshHost {
-    closeErr?: any
+    closeErr?: Error | string
     connected: boolean = false
     ssh: SshClient = undefined as any
     sftp: SFTPPromiseWrapper = undefined as any
@@ -28,7 +28,11 @@ export class SshHost {
         public settings: SshHostSettings
     ) { }
 
-    private errorDisconnect(err: any) {
+    private emergencyClose(err: Error | string) {
+        if (typeof err == "string") {
+            err = new Error(err)
+        }
+
         this.connected = false
         if (!this.closeErr) {
             this.closeErr = err
@@ -36,30 +40,48 @@ export class SshHost {
         this.ssh.destroy()
     }
 
+    throwCloseError(): void | never {
+        if (!this.connected) {
+            if (this.closeErr) {
+                throw this.closeErr
+            }
+
+            throw new Error(
+                "SshHost is not connected!"
+            )
+        }
+    }
+
     private async connect(): Promise<void> {
         this.ssh = await handleHops(this.settings)
         this.connected = true
 
         this.ssh.on("close", () => {
-            this.errorDisconnect(
-                new Error("Ssh2 client closed!")
+            this.emergencyClose(
+                new Error(
+                    "Ssh2 client closed!"
+                )
             )
         })
 
         this.ssh.on("end", () => {
-            this.errorDisconnect(
-                new Error("Ssh2 client end!")
+            this.emergencyClose(
+                new Error(
+                    "Ssh2 client end!"
+                )
             )
         })
 
         this.ssh.on("timeout", () => {
-            this.errorDisconnect(
-                new Error("Ssh2 client connection timeout!")
+            this.emergencyClose(
+                new Error(
+                    "Ssh2 client connection timeout!"
+                )
             )
         })
 
         this.ssh.on("error", (err: Error & ClientErrorExtensions) => {
-            this.errorDisconnect(
+            this.emergencyClose(
                 err
             )
         })
@@ -71,6 +93,8 @@ export class SshHost {
         )
 
         this.sftp = createSFTPPromiseWrapper(sftpWrapper)
+
+
     }
 
     close(): void {
@@ -84,6 +108,8 @@ export class SshHost {
         cmd: string,
         options?: CmdChannelOptions
     ): Promise<SshChannel> {
+        this.throwCloseError()
+
         return execSshChannel(
             this.ssh,
             cmd,
@@ -95,25 +121,40 @@ export class SshHost {
         cmd: string,
         options?: CmdExecOptions
     ): Promise<SshChannelExit> {
-        const channel = await execSshChannel(
-            this.ssh,
-            cmd,
-            options
-        )
+        this.throwCloseError()
 
-        return channel.toPromise(
-            options
-        )
+        try {
+            const channel = await execSshChannel(
+                this.ssh,
+                cmd,
+                options
+            )
+
+            return await channel.toPromise(
+                options
+            )
+        } catch (err) {
+            if (
+                err instanceof Error &&
+                err.message == "Ssh channel closed, check why the socket was closed or lost connection"
+            ) {
+                this.throwCloseError()
+            }
+
+            throw err
+        }
     }
 
     async exists(
         cmd: string
     ): Promise<boolean> {
+        this.throwCloseError()
+
         if (cmd.includes(" ")) {
             throw new Error("Command can not contain a space: '" + cmd + "'")
         }
 
-        const exit = await this.exec(cmd, {
+        const exit = await this.exec("command -v " + cmd, {
             expectedExitCode: [0, 1]
         })
 
@@ -122,6 +163,8 @@ export class SshHost {
 
     cachedOsRelease: OsRelease | undefined
     fetchOsRelease(): Awaitable<OsRelease> {
+        this.throwCloseError()
+
         if (this.cachedOsRelease) {
             return this.cachedOsRelease
         }
@@ -133,16 +176,18 @@ export class SshHost {
         })
     }
 
-    cachedPackageManager: AbstractPackageManager | undefined
-    getPm(): Awaitable<AbstractPackageManager> {
-        if (this.cachedPackageManager) {
-            return this.cachedPackageManager
+    cachedApm: AbstractPackageManager | undefined
+    getApm(): Awaitable<AbstractPackageManager> {
+        this.throwCloseError()
+
+        if (this.cachedApm) {
+            return this.cachedApm
         }
 
-        return getPm(
+        return getApm(
             this
-        ).then((pm) => {
-            return this.cachedPackageManager = pm
+        ).then((apm) => {
+            return this.cachedApm = apm
         })
     }
 }
