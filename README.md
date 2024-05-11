@@ -43,9 +43,42 @@ HiveSsh requires the following server environments:
 
 # Getting started
 
+```sh
+npm i hivessh
+```
+
 ```ts
-//coming soon
-import {}
+import { SshHost } from "hivelib"
+
+//connect
+const myHost = await SshHost.connect({
+    host: "127.0.0.1",
+    //port: 22, (default 22)
+    //user: "root", (default root)
+
+    //password: "123456789",
+    // or
+    //privateKey: "..."
+    // or
+    //privateKeyPath:"/home/user/.ssh/id_rsa",
+    //passphrase: "123456789"
+})
+
+// check files in user home dir
+const result = await myHost.exec("ls -al")
+console.log("Result: ", result.out)
+
+// check if a command exists
+const gitExist = await myHost.exists("git")
+console.log("Git exists: ", gitExist)
+
+// upgrade all packages using the abstract package manager
+const apm = await myHost.getApm()
+await apm.updateCache()
+await apm.upgradeAll()
+
+// install a package using the abstract package manager
+await apm.install("git")
 ```
 
 # Technologies
