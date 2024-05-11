@@ -49,6 +49,7 @@ npm i hivessh
 
 ```ts
 import { SshHost } from "hivelib"
+// or import SshHost from "hivelib" (SshHost is also the default export)
 
 //connect
 const myHost = await SshHost.connect({
