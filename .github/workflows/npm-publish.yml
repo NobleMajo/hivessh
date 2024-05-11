@@ -6,8 +6,8 @@ name: NPM Publish
 on:
   push:
     branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+    paths:
+      - 'package.json'
 
 jobs:
   build:
