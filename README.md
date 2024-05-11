@@ -86,14 +86,13 @@ HiveSsh is built using the following technologies:
 - **TypeScript**
 - **Node.js**
 - **SSH2**
-- **SFTP**
-
-# License
-HiveSsh is licensed under the MIT license, providing users with flexibility and freedom to use and modify the software according to their needs.
 
 # Contributing
 Contributions to HiveSsh are welcome!  
 Interested users can refer to the guidelines provided in the [CONTRIBUTING.md](CONTRIBUTING.md) file to contribute to the project and help improve its functionality and features.
+
+# License
+HiveSsh is licensed under the [MIT license](LICENSE), providing users with flexibility and freedom to use and modify the software according to their needs.
 
 # Disclaimer
 HiveSsh is provided without warranties.  
