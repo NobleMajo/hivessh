@@ -1,7 +1,7 @@
 {
-  "name": "hivelib",
+  "name": "hivessh",
   "version": "0.0.1",
-  "description": "HiveLib simplifies SSH2 connections via promise-based task execution on Linux servers with built-in server utilities and powerful command execution functions",
+  "description": "HiveSsh simplifies SSH2 connections via promise-based task execution on Linux servers with built-in server utilities and powerful command execution functions",
   "main": "dist/index.js",
   "type": "module",
   "scripts": {
