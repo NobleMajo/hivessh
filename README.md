@@ -1,6 +1,6 @@
 # HiveSsh
 
-![CI/CD](https://github.com/noblemajo/hivessh/workflows/npm-publish/badge.svg)
+![CI/CD](https://github.com/noblemajo/hivessh/actions/workflows/npm-publish.yml/badge.svg)
 ![MIT](https://img.shields.io/badge/license-MIT-blue.svg)
 ![typescript](https://img.shields.io/badge/dynamic/json?style=plastic&color=blue&label=Typescript&prefix=v&query=devDependencies.typescript&url=https%3A%2F%2Fraw.githubusercontent.com%2Fnoblemajo%2Fhivessh%2Fmain%2Fpackage.json)
 ![npm](https://img.shields.io/npm/v/hivessh.svg?style=plastic&logo=npm&color=red)
