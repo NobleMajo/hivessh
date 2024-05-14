@@ -13,14 +13,17 @@
 ![](https://img.shields.io/badge/dynamic/json?color=darkred&label=open%20issues&query=open_issues&suffix=x&url=https%3A%2F%2Fapi.github.com%2Frepos%2Fnoblemajo%2Fhivessh)
 
 # Table of Contents
+- [HiveSsh](#hivessh)
 - [Table of Contents](#table-of-contents)
 - [About](#about)
 - [Key Features](#key-features)
 - [Requirements](#requirements)
 - [Getting started](#getting-started)
+  - [Promisified](#promisified)
+  - [AbstractPackageManager](#abstractpackagemanager)
 - [Technologies](#technologies)
-- [License](#license)
 - [Contributing](#contributing)
+- [License](#license)
 - [Disclaimer](#disclaimer)
 
 # About
@@ -32,6 +35,7 @@ HiveSsh is a library designed to streamline SSH2 connections and task execution 
 HiveSsh offers the following key features:
 - __All-Distributions__: SSH2 and SFTP operations for all Linux servers
 - __Promisified__: Promise-based functions for ease of use
+
 - __AbstractPackageManager__: Built-in abstract package manager with support for apt, dnf, and yum, with additional configurability
 - __Exec__: Command execution utilities for event or promise-based error handling and output parsing, filtering, and mapping
 
@@ -64,7 +68,13 @@ const myHost = await SshHost.connect({
     //privateKeyPath:"/home/user/.ssh/id_rsa",
     //passphrase: "123456789"
 })
+```
 
+Here are some using examples:
+
+## Promisified
+After connecting an `SshHost`, you can leverage the promised execution (and other asset features) directly on the `SshHost` instance.
+```ts
 // check files in user home dir
 const result = await myHost.exec("ls -al")
 console.log("Result: ", result.out)
@@ -72,7 +82,20 @@ console.log("Result: ", result.out)
 // check if a command exists
 const gitExist = await myHost.exists("git")
 console.log("Git exists: ", gitExist)
+```
 
+You can also use the promised SFTP features via `SshHost.sftp`.
+```ts
+const myBinary: Buffer = await myHost.sftp.readFile("/home/tester/my-binary")
+
+const exampleConfig: string = await myHost.sftp.readFile("/etc/example/config.yml", "utf8")
+```
+
+## AbstractPackageManager
+With the abstract package manager (`apm`) you can use apt, dnf, yum or a custom implemented package manager via one interface.
+The apm features are limited and general, but you can update your system and install, delete and list your packages.
+
+```ts
 // upgrade all packages using the abstract package manager
 const apm = await myHost.getApm()
 await apm.updateCache()
@@ -86,7 +109,7 @@ await apm.install("git")
 HiveSsh is built using the following technologies:
 - **TypeScript**
 - **Node.js**
-- **SSH2**
+- **SSH2** ([NPM Package](https://www.npmjs.com/package/ssh2) & Protocol)
 
 # Contributing
 Contributions to HiveSsh are welcome!  
