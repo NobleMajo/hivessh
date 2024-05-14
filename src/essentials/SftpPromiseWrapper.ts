@@ -58,22 +58,54 @@ export interface SFTPPromiseInterface {
      * (Client-only)
      * Reads a file in memory and returns its contents
      */
-    readFile(
+    readFile<
+        O extends ReadFileOptions | BufferEncoding
+    >(
         remotePath: string,
-        options?: ReadFileOptions | BufferEncoding,
-    ): Promise<Buffer>
+        options?: O,
+    ): Promise<
+        O extends BufferEncoding ?
+        string :
+        O extends { encodeing: BufferEncoding } ?
+        string :
+        Buffer
+    >
 
     /**
      * (Client-only)
      * Writes data to a file
      */
-    writeFile(remotePath: string, data: string | Buffer, options?: WriteFileOptions | BufferEncoding): Promise<void>
+    writeFile<
+        O extends WriteFileOptions | BufferEncoding,
+    >(
+        remotePath: string,
+        data: (
+            O extends BufferEncoding ?
+            string :
+            O extends { encodeing: BufferEncoding } ?
+            string :
+            Buffer
+        ),
+        options?: WriteFileOptions | BufferEncoding
+    ): Promise<void>
 
     /**
      * (Client-only)
      * Appends data to a file
      */
-    appendFile(remotePath: string, data: string | Buffer, options?: WriteFileOptions): Promise<void>
+    appendFile<
+        O extends WriteFileOptions | BufferEncoding,
+    >(
+        remotePath: string,
+        data: (
+            O extends BufferEncoding ?
+            string :
+            O extends { encodeing: BufferEncoding } ?
+            string :
+            Buffer
+        ),
+        options?: WriteFileOptions
+    ): Promise<void>
 
     /**
      * (Client-only)
