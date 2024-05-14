@@ -20,6 +20,8 @@
 - [Requirements](#requirements)
 - [Getting started](#getting-started)
   - [Promisified](#promisified)
+    - [Execute and assets](#execute-and-assets)
+    - [Sftp](#sftp)
   - [AbstractPackageManager](#abstractpackagemanager)
 - [Technologies](#technologies)
 - [Contributing](#contributing)
@@ -73,18 +75,60 @@ const myHost = await SshHost.connect({
 Here are some using examples:
 
 ## Promisified
-After connecting an `SshHost`, you can leverage the promised execution (and other asset features) directly on the `SshHost` instance.
+### Execute and assets
+
+After connecting an `SshHost`, you can use the promisified execution (and other asset features) directly on the `SshHost` instance.
 ```ts
 // check files in user home dir
-const result = await myHost.exec("ls -al")
-console.log("Result: ", result.out)
-
-// check if a command exists
-const gitExist = await myHost.exists("git")
-console.log("Git exists: ", gitExist)
+const homeDirFiles = await myHost.exec("ls -al")
+console.log("Home dir files:\n", homeDirFiles.out)
 ```
 
-You can also use the promised SFTP features via `SshHost.sftp`.
+Get the hosts public ip address:
+```ts
+// check if curl command exists
+const curlExists = await myHost.exists("curl ifconfig.me")
+if(!curlExists){
+  myHost.close()
+  throw new Error("Curl is not installed on: " + myHost.settings.id)
+}
+
+const myIp = await myHost.exec("curl ifconfig.me")
+console.log("Host public ip: " + myIp.out)
+//other sources: `api.ipify.org`, `ipinfo.io/ip` or `ipecho.net/plain`
+```
+
+You can also execute commands on absolut path:
+```ts
+const homeDirFiles = await myHost.exec(
+  "ls -al",
+  { pwd: "/etc" }
+)
+console.log("Etc files: ", homeDirFiles.out)
+```
+
+Also a git example:
+```ts
+// check if git command exists
+const gitExist = await myHost.exists("git")
+if(!curlExists){
+  myHost.close()
+  throw new Error("Git is not installed on: " + myHost.settings.id)
+}
+
+// get git status
+const gitStatus = await myHost.exec(
+  "git status",
+  {
+    pwd: "/home/tester/myrepo"
+  }
+)
+
+console.log("Git status:\n", gitStatus.out)
+```
+
+### Sftp
+You can also use the promisified SFTP features via `SshHost.sftp`.
 ```ts
 const myBinary: Buffer = await myHost.sftp.readFile("/home/tester/my-binary")
 
@@ -92,7 +136,7 @@ const exampleConfig: string = await myHost.sftp.readFile("/etc/example/config.ym
 ```
 
 ## AbstractPackageManager
-With the abstract package manager (`apm`) you can use apt, dnf, yum or a custom implemented package manager via one interface.
+With the abstract package manager (`apm`) you can use `apt`, `dnf`, `yum` or a `custom implemented package manager` via one interface.
 The apm features are limited and general, but you can update your system and install, delete and list your packages.
 
 ```ts
