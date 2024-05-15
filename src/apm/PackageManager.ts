@@ -74,7 +74,7 @@ export class AbstractPackageManagerWrapper {
     }
 
     debug: boolean = false
-    exec: [string, boolean, ...any[]][] = []
+    execLogs: [string, boolean, ...any[]][] = []
 
     noCache: boolean = false
 
@@ -100,7 +100,7 @@ export class AbstractPackageManagerWrapper {
             this.updateCacheMillis
         ) {
             if (this.debug) {
-                this.exec.push([
+                this.execLogs.push([
                     "updateCache",
                     true,
                 ])
@@ -111,7 +111,7 @@ export class AbstractPackageManagerWrapper {
         return this.apm.updateCache()
             ?.then((v) => {
                 if (this.debug) {
-                    this.exec.push([
+                    this.execLogs.push([
                         "updateCache",
                         false,
                     ])
@@ -126,7 +126,7 @@ export class AbstractPackageManagerWrapper {
      */
     clearCache(): Awaitable<void> {
         if (this.debug) {
-            this.exec.push([
+            this.execLogs.push([
                 "clearCache",
                 false,
             ])
@@ -142,7 +142,7 @@ export class AbstractPackageManagerWrapper {
      */
     install(...pkgs: string[]): Awaitable<void> {
         if (this.debug) {
-            this.exec.push([
+            this.execLogs.push([
                 "install",
                 false,
                 pkgs,
@@ -156,7 +156,7 @@ export class AbstractPackageManagerWrapper {
      */
     uninstall(...pkgs: string[]): Awaitable<void> {
         if (this.debug) {
-            this.exec.push([
+            this.execLogs.push([
                 "uninstall",
                 false,
                 pkgs,
@@ -179,7 +179,7 @@ export class AbstractPackageManagerWrapper {
             this.upgradeAllMillis
         ) {
             if (this.debug) {
-                this.exec.push([
+                this.execLogs.push([
                     "upgradeAll",
                     true,
                 ])
@@ -190,7 +190,7 @@ export class AbstractPackageManagerWrapper {
         return this.apm.upgradeAll()
             ?.then((v) => {
                 if (this.debug) {
-                    this.exec.push([
+                    this.execLogs.push([
                         "upgradeAll",
                         false,
                     ])
@@ -212,7 +212,7 @@ export class AbstractPackageManagerWrapper {
             this.uninstallUnusedMillis
         ) {
             if (this.debug) {
-                this.exec.push([
+                this.execLogs.push([
                     "uninstallUnused",
                     true,
                 ])
@@ -223,7 +223,7 @@ export class AbstractPackageManagerWrapper {
         return this.apm.uninstallUnused()
             ?.then((v) => {
                 if (this.debug) {
-                    this.exec.push([
+                    this.execLogs.push([
                         "uninstallUnused",
                         false,
                     ])
@@ -240,7 +240,7 @@ export class AbstractPackageManagerWrapper {
      */
     list(): Awaitable<string[]> {
         if (this.debug) {
-            this.exec.push([
+            this.execLogs.push([
                 "list",
                 false,
             ])
@@ -253,7 +253,7 @@ export class AbstractPackageManagerWrapper {
      */
     upgradable(): Awaitable<string[]> {
         if (this.debug) {
-            this.exec.push([
+            this.execLogs.push([
                 "upgradable",
                 false,
             ])
@@ -266,7 +266,7 @@ export class AbstractPackageManagerWrapper {
      */
     describe(pkg: string): Awaitable<AbstractPackage> {
         if (this.debug) {
-            this.exec.push([
+            this.execLogs.push([
                 "describe",
                 false,
                 pkg,
