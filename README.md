@@ -1,5 +1,4 @@
-# HiveSsh
-
+# HiveSsh [(Beta)](#beta-info)
 ![CI/CD](https://github.com/noblemajo/hivessh/actions/workflows/npm-publish.yml/badge.svg)
 ![MIT](https://img.shields.io/badge/license-MIT-blue.svg)
 ![typescript](https://img.shields.io/badge/dynamic/json?style=plastic&color=blue&label=Typescript&prefix=v&query=devDependencies.typescript&url=https%3A%2F%2Fraw.githubusercontent.com%2Fnoblemajo%2Fhivessh%2Fmain%2Fpackage.json)
@@ -13,9 +12,10 @@
 ![](https://img.shields.io/badge/dynamic/json?color=darkred&label=open%20issues&query=open_issues&suffix=x&url=https%3A%2F%2Fapi.github.com%2Frepos%2Fnoblemajo%2Fhivessh)
 
 # Table of Contents
-- [HiveSsh](#hivessh)
+- [HiveSsh (Beta)](#hivessh-beta)
 - [Table of Contents](#table-of-contents)
 - [About](#about)
+- [Beta info](#beta-info)
 - [Key Features](#key-features)
 - [Requirements](#requirements)
 - [Getting started](#getting-started)
@@ -32,6 +32,12 @@
 HiveSsh simplifies SSH2 connections via promise-based task execution on Linux servers with built-in server utilities and powerful command execution functions.
 
 HiveSsh is a library designed to streamline SSH2 connections and task execution on Linux servers. It provides user-friendly promise-based functions for efficient server operations without the need for a client application.
+
+# Beta info
+This software is yet not fully developed and will change over time.
+If a version is intended to be used in another release, it is recommended to pin the dependency to a version to prevent beta breaking changes.
+
+Feel free to test the software and submit suggestions for improvements or problems.
 
 # Key Features
 HiveSsh offers the following key features:
