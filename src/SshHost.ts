@@ -1,12 +1,12 @@
 import { ClientErrorExtensions, SFTPWrapper, Client as SshClient } from "ssh2"
+import { ExecSession } from "./ExecSession.js"
 import { handleHops } from "./HostHop.js"
 import { CmdChannelOptions, CmdExecOptions, SshChannel, SshChannelExit, execSshChannel } from "./SshExec.js"
 import { SshHostOptions, SshHostSettings, loadSettings } from "./SshHostOptions.js"
-import { SessionOptions, SshSession } from "./SshSession.js"
 import { AbstractPackageManager, getApm } from "./apm/PackageManager.js"
 import { OsRelease, fetchOsRelease } from "./essentials/OsRelease.js"
 import { SFTPPromiseWrapper, createSFTPPromiseWrapper } from "./essentials/SftpPromiseWrapper.js"
-import { Awaitable } from "./utils/base.js"
+import { Awaitable, trimAll } from "./utils/base.js"
 
 export class SshHost {
     closeErr?: Error | string
@@ -146,22 +146,36 @@ export class SshHost {
         }
     }
 
-    sesssion(
-        options?: SessionOptions,
-    ): SshSession {
-        return new SshSession(
+    session(
+        pwd: string,
+        sudo?: boolean,
+        timeoutMillis?: number,
+    ): ExecSession {
+        const session = new ExecSession(
             this,
-            options,
+            {
+                PWD: pwd,
+            }
         )
+
+        session.sudo = sudo
+        session.timeoutMillis = timeoutMillis
+
+        return session
     }
 
-    async exists(
+    async homeDir(): Promise<string> {
+        const result = await this.exec("pwd")
+        return trimAll(result.out)
+    }
+
+    async cmdExists(
         cmd: string
     ): Promise<boolean> {
         this.throwCloseError()
 
         if (cmd.includes(" ")) {
-            throw new Error("Command can not contain a space: '" + cmd + "'")
+            throw new Error("Command cant contain a space: '" + cmd + "'")
         }
 
         const exit = await this.exec("command -v " + cmd, {

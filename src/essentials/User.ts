@@ -9,7 +9,7 @@ export async function isSudoer(
         user = sshHost.settings.user
     }
 
-    if (!(await sshHost.exists("sudo"))) {
+    if (!(await sshHost.cmdExists("sudo"))) {
         throw new Error(
             "Cant check if '" + user + "' is sudoer if sudo is not installed"
         )

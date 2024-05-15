@@ -312,8 +312,8 @@ export function registerDefaultApmMapperChecker(): void {
     apmChecker.push(
         async (sshHost) => {
             if (
-                await sshHost.exists("apt") &&
-                await sshHost.exists("apt-get")
+                await sshHost.cmdExists("apt") &&
+                await sshHost.cmdExists("apt-get")
             ) {
                 return initAptApm(sshHost)
             }
@@ -323,7 +323,7 @@ export function registerDefaultApmMapperChecker(): void {
     apmChecker.push(
         async (sshHost) => {
             if (
-                await sshHost.exists("dnf")
+                await sshHost.cmdExists("dnf")
             ) {
                 return initDnfApm(sshHost)
             }
@@ -333,7 +333,7 @@ export function registerDefaultApmMapperChecker(): void {
     apmChecker.push(
         async (sshHost) => {
             if (
-                await sshHost.exists("yum")
+                await sshHost.cmdExists("yum")
             ) {
                 return initYumApm(sshHost)
             }

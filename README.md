@@ -23,6 +23,7 @@
     - [Execute and assets](#execute-and-assets)
     - [Sftp](#sftp)
   - [AbstractPackageManager](#abstractpackagemanager)
+  - [Exec Session](#exec-session)
 - [Technologies](#technologies)
 - [Contributing](#contributing)
 - [License](#license)
@@ -153,6 +154,17 @@ await apm.upgradeAll()
 
 // install a package using the abstract package manager
 await apm.install("git")
+```
+
+## Exec Session
+Sessions are available so that the PWD (process working directory) and environment do not have to be specified for every single command.
+These sessions store that persistent settings across multiple executions and can even resolve relative paths.
+
+```ts
+const session = host.session("/etc/example")
+
+session.exec("ls -al") // is executed at /etc/example
+session.exec("./myApp") // is using MY_APP_ENV_VAR
 ```
 
 # Technologies
