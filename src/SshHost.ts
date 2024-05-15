@@ -2,6 +2,7 @@ import { ClientErrorExtensions, SFTPWrapper, Client as SshClient } from "ssh2"
 import { handleHops } from "./HostHop.js"
 import { CmdChannelOptions, CmdExecOptions, SshChannel, SshChannelExit, execSshChannel } from "./SshExec.js"
 import { SshHostOptions, SshHostSettings, loadSettings } from "./SshHostOptions.js"
+import { SessionOptions, SshSession } from "./SshSession.js"
 import { AbstractPackageManager, getApm } from "./apm/PackageManager.js"
 import { OsRelease, fetchOsRelease } from "./essentials/OsRelease.js"
 import { SFTPPromiseWrapper, createSFTPPromiseWrapper } from "./essentials/SftpPromiseWrapper.js"
@@ -143,6 +144,15 @@ export class SshHost {
 
             throw err
         }
+    }
+
+    sesssion(
+        options?: SessionOptions,
+    ): SshSession {
+        return new SshSession(
+            this,
+            options,
+        )
     }
 
     async exists(

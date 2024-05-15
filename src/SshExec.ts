@@ -169,7 +169,6 @@ export interface ChannelToPromiseOptions {
     throwOnStdOut?: boolean,
     throwOnErrOut?: boolean,
     expectedExitCode?: number | number[],
-
 }
 
 export interface ChannelToPromiseSettings {
