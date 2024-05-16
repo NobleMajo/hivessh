@@ -1,4 +1,4 @@
-import { ClientErrorExtensions, SFTPWrapper, Client as SshClient } from "ssh2"
+import { ClientChannel, ClientErrorExtensions, SFTPWrapper, Client as SshClient } from "ssh2"
 import { ExecSession } from "./ExecSession.js"
 import { handleHops } from "./HostHop.js"
 import { CmdChannelOptions, CmdExecOptions, SshChannel, SshChannelExit, execSshChannel } from "./SshExec.js"
@@ -171,6 +171,22 @@ export class SshHost {
 
             throw err
         }
+    }
+
+    /**
+     * 
+     * @description Opens a ssh shell channel to handle the shell by yourself
+     * @returns A promise that resolves when the shell is started and the promise provides you with a session channel
+     */
+    shellChannel(): Promise<ClientChannel> {
+        return new Promise<ClientChannel>(
+            (res, rej) => this.ssh.shell(
+                (err, channel) =>
+                    err ?
+                        rej(err) :
+                        res(channel)
+            )
+        )
     }
 
     /**
