@@ -15,6 +15,12 @@ export class SshHost {
     sftp: SFTPPromiseWrapper = undefined as any
     release: OsRelease = undefined as any
 
+    /**
+     * 
+     * @description The only public function to create a SshHost object.
+     * @param options Connection options for the ssh host
+     * @returns A promise that resolves when the connection is established and the promise provides you an SshHost object
+     */
     static async connect(
         options: SshHostOptions,
     ): Promise<SshHost> {
@@ -28,30 +34,6 @@ export class SshHost {
     private constructor(
         public settings: SshHostSettings
     ) { }
-
-    private emergencyClose(err: Error | string) {
-        if (typeof err == "string") {
-            err = new Error(err)
-        }
-
-        this.connected = false
-        if (!this.closeErr) {
-            this.closeErr = err
-        }
-        this.ssh.destroy()
-    }
-
-    throwCloseError(): void | never {
-        if (!this.connected) {
-            if (this.closeErr) {
-                throw this.closeErr
-            }
-
-            throw new Error(
-                "SshHost is not connected!"
-            )
-        }
-    }
 
     private async connect(): Promise<void> {
         this.ssh = await handleHops(this.settings)
@@ -98,6 +80,37 @@ export class SshHost {
 
     }
 
+    private emergencyClose(err: Error | string) {
+        if (typeof err == "string") {
+            err = new Error(err)
+        }
+
+        this.connected = false
+        if (!this.closeErr) {
+            this.closeErr = err
+        }
+        this.ssh.destroy()
+    }
+
+    /**
+     * @description If the SshHost socket is closed because of an error this method throws that error. 
+     * @throws Ssh socket close reason
+     */
+    throwCloseError(): void | never {
+        if (!this.connected) {
+            if (this.closeErr) {
+                throw this.closeErr
+            }
+
+            throw new Error(
+                "SshHost is not connected!"
+            )
+        }
+    }
+
+    /**
+     * @description Closes the ssh socket if still connected
+     */
     close(): void {
         if (this.connected) {
             this.ssh.end()
@@ -105,6 +118,13 @@ export class SshHost {
         this.connected = false
     }
 
+    /**
+     * 
+     * @param cmd Command string to execute
+     * @param options Command channel execution options
+     * @description Opens a ssh channel to handle a command execution by yourself
+     * @returns A promise that resolves when the command begins execution and the promise provides you with the SshChannel to process the command output
+     */
     execChannel(
         cmd: string,
         options?: CmdChannelOptions
@@ -118,6 +138,13 @@ export class SshHost {
         )
     }
 
+    /**
+     * 
+     * @param cmd Command string to execute
+     * @param options Command execution options
+     * @description Opens an SSH channel to execute the command and resolves the promise as soon as the exit code is available for the executed command
+     * @returns A promise that resolves when the command begins execution and the promise provides you the process some runtime, stdout, stderr and some exit data
+     */
     async exec(
         cmd: string,
         options?: CmdExecOptions
@@ -146,6 +173,13 @@ export class SshHost {
         }
     }
 
+    /**
+     * 
+     * @param pwd Inital path of the session
+     * @param sudo Defines if commands should be prefied as sudo
+     * @param timeoutMillis Default command timeout milliseconds
+     * @returns The new created ExecSession object
+     */
     session(
         pwd: string,
         sudo?: boolean,
@@ -169,6 +203,12 @@ export class SshHost {
         return trimAll(result.out)
     }
 
+    /**
+     * 
+     * @param cmd Command to check if it cmdExists
+     * @description Function that checks if a spisific command exists on the remote ssh host
+     * @returns True if command exists and false if not
+     */
     async cmdExists(
         cmd: string
     ): Promise<boolean> {
@@ -186,10 +226,22 @@ export class SshHost {
     }
 
     cachedOsRelease: OsRelease | undefined
-    fetchOsRelease(): Awaitable<OsRelease> {
+
+    /**
+     * 
+     * @description Resolves all releases files from '/etc/*-release' on the remove ssh host and maps them. Also tries to detect the distro name and version.
+     * @param useCache The return value of this function get cached for the next function call. Set this to false to disable the caching.
+     * @returns Returns an object that maps all values of all '/etc/*-release' files.
+     */
+    fetchOsRelease(
+        useCache: boolean = true,
+    ): Awaitable<OsRelease> {
         this.throwCloseError()
 
-        if (this.cachedOsRelease) {
+        if (
+            useCache &&
+            this.cachedOsRelease
+        ) {
             return this.cachedOsRelease
         }
 
@@ -201,10 +253,23 @@ export class SshHost {
     }
 
     cachedApm: AbstractPackageManager | undefined
-    getApm(): Awaitable<AbstractPackageManager> {
+
+    /**
+     * 
+     * @description Checks one of the predefined package mangers is installed (apt, dnf, yum or a custom one) and returns a abstract interface for that package manager.
+     * @param useCache The return value of this function get cached for the next function call. Set this to false to disable the caching.
+     * @throws Throws an error if the package manager cant be detected.
+     * @returns The abstract interface of the hosts package manager (if found).
+     */
+    getApm(
+        useCache: boolean = true,
+    ): Awaitable<AbstractPackageManager> {
         this.throwCloseError()
 
-        if (this.cachedApm) {
+        if (
+            useCache &&
+            this.cachedApm
+        ) {
             return this.cachedApm
         }
 
