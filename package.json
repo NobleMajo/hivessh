@@ -1,6 +1,6 @@
 {
   "name": "hivessh",
-  "version": "0.3.9",
+  "version": "0.3.10",
   "description": "HiveSsh simplifies SSH2 connections via promise-based task execution on Linux servers with built-in server utilities and powerful command execution functions",
   "main": "dist/index.js",
   "type": "module",

@@ -23,6 +23,8 @@
     - [Execute and assets](#execute-and-assets)
     - [Sftp](#sftp)
   - [AbstractPackageManager](#abstractpackagemanager)
+    - [Custom package manager](#custom-package-manager)
+    - [Register package manager](#register-package-manager)
   - [Exec Session](#exec-session)
 - [Technologies](#technologies)
 - [Contributing](#contributing)
@@ -62,19 +64,31 @@ npm i hivessh
 
 ```ts
 import { SshHost } from "hivelib"
-// or import SshHost from "hivelib" (SshHost is also the default export)
 
-//connect
+// connect
 const myHost = await SshHost.connect({
     host: "127.0.0.1",
     //port: 22, (default 22)
     //user: "root", (default root)
 
-    //password: "123456789",
-    // or
-    //privateKey: "..."
-    // or
-    //privateKeyPath:"/home/user/.ssh/id_rsa",
+    password: "123456789",
+})
+// or
+const myHost = await SshHost.connect({
+    host: "127.0.0.1",
+    //port: 22, (default 22)
+    //user: "root", (default root)
+
+    privateKey: "..."
+    //passphrase: "123456789"
+})
+// or
+const myHost = await SshHost.connect({
+    host: "127.0.0.1",
+    //port: 22, (default 22)
+    //user: "root", (default root)
+
+    privateKeyPath:"/home/user/.ssh/id_rsa",
     //passphrase: "123456789"
 })
 ```
@@ -155,6 +169,28 @@ await apm.upgradeAll()
 // install a package using the abstract package manager
 await apm.install("git")
 ```
+
+### Custom package manager
+
+For creating a custon apm you need to implement the following typescript interface:
+[https://github.com/NobleMajo/hivessh/blob/main/src/apm/ApmInterface.ts](https://github.com/NobleMajo/hivessh/blob/main/src/apm/ApmInterface.ts)
+
+### Register package manager
+
+After implementing the custom package manager you need to register it global via a checker function:
+```ts
+import { apmChecker, AbstractPackageManager } from "./apm/apm.js"
+
+apmChecker.push(async (host) => {
+    if (await host.cmdExists("myapm")) {
+        const myApm: AbstractPackageManager = { ... }
+
+        return myApm
+    }
+})
+```
+
+This function is called when the `getApm()` is called and can return a package manager depending on the host.
 
 ## Exec Session
 Sessions are available so that the PWD (process working directory) and environment do not have to be specified for every single command.

@@ -1,7 +1,7 @@
 import { SshChannelExit, StreamDataMapper } from "../SshExec.js"
 import { SshHost } from "../SshHost.js"
 import { Awaitable, filterEmpty } from "../utils/base.js"
-import { AbstractPackage, AbstractPackageManager, ApmInit } from "./Apm.js"
+import { AbstractPackage, AbstractPackageManager, ApmInit } from "./apm.js"
 
 export const yumEnv = {
     LANG: "en_US.UTF-8"
