@@ -4,6 +4,7 @@ import { AbstractPackage, AbstractPackageManager } from "./ApmInterface.js"
 import { initAptApm } from "./apt.js"
 import { initDnfApm } from "./dnf.js"
 import { initYumApm } from "./yum.js"
+export { AbstractPackage, AbstractPackageManager } from "./ApmInterface.js"
 
 export class AbstractPackageManagerWrapper {
     type: string
