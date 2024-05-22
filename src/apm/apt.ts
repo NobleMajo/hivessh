@@ -1,7 +1,7 @@
 import { SshChannelExit, StreamDataMapper } from "../SshExec.js"
 import { SshHost } from "../SshHost.js"
 import { Awaitable, trimAll } from "../utils/base.js"
-import { AbstractPackage, AbstractPackageManager, ApmInit } from "./PackageManager.js"
+import { AbstractPackage, AbstractPackageManager, ApmInit } from "./Apm.js"
 
 export const aptEnv = {
     "LANG": "en_US.UTF-8",

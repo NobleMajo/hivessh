@@ -94,7 +94,7 @@ console.log("Home dir files:\n", homeDirFiles.out)
 Get the hosts public ip address:
 ```ts
 // check if curl command exists
-const curlExists = await myHost.exists("curl ifconfig.me")
+const curlExists = await myHost.exists("curl")
 if(!curlExists){
   myHost.close()
   throw new Error("Curl is not installed on: " + myHost.settings.id)
@@ -107,18 +107,18 @@ console.log("Host public ip: " + myIp.out)
 
 You can also execute commands on absolut path:
 ```ts
-const homeDirFiles = await myHost.exec(
+const etcDirFiles = await myHost.exec(
   "ls -al",
   { pwd: "/etc" }
 )
-console.log("Etc files: ", homeDirFiles.out)
+console.log("Etc files: ", etcDirFiles.out)
 ```
 
 Also a git example:
 ```ts
 // check if git command exists
-const gitExist = await myHost.exists("git")
-if(!curlExists){
+const gitExists = await myHost.exists("git")
+if(!gitExists){
   myHost.close()
   throw new Error("Git is not installed on: " + myHost.settings.id)
 }
@@ -165,6 +165,25 @@ const session = host.session("/etc/example")
 
 session.exec("ls -al") // is executed at /etc/example
 session.exec("./myApp") // is using MY_APP_ENV_VAR
+```
+
+Example with more options:
+```ts
+const session = host.session("/etc/someapp")
+
+//if sudo is needed enable it for following processes
+session.sudo = true
+
+// set process environment variables for following processes
+session.env.TZ = "Europe/Berlin"
+session.env.NODE_ENV = "production"
+
+// change directory (without checking if exists) for following processes
+// shortcut for session.env.PWD = "/etc/someapp/dist"
+session.cd("/etc/someapp/dist")
+
+// execute my app with earlier defined environment
+session.exec("node myApp.js")
 ```
 
 # Technologies
