@@ -1,25 +1,24 @@
-import { SshChannelExit, StreamDataMapper } from "../SshExec.js"
-import { SshHost } from "../SshHost.js"
-import { Awaitable, trimAll } from "../utils/base.js"
-import { AbstractPackage, AbstractPackageManager, ApmInit } from "./apm.js"
+import { SshChannelExit, StreamDataMapper } from "../../SshExec.js"
+import { SshHost } from "../../SshHost.js"
+import { Awaitable, trimAll } from "../../utils/base.js"
+import { AbstractPackage, AbstractPackageManager, ApmInit } from "../apm.js"
 
 export const aptEnv = {
-    "LANG": "en_US.UTF-8",
-    "DEBIAN_FRONTEND": "noninteractive",
+    LANG: "en_US.UTF-8",
+    DEBIAN_FRONTEND: "noninteractive",
 }
 
 export const ignoredErrMsgs: string[] = [
     "debconf: unable to initialize frontend",
     "warning"
 ]
+
 export const ignoreMessageFilter: StreamDataMapper = (
     data: string
 ) => {
     let data2 = trimAll(data).toLowerCase()
     for (const msg of ignoredErrMsgs) {
         if (
-            data2.startsWith(msg) ||
-            data2.endsWith(msg) ||
             data2.includes(msg)
         ) {
             return undefined

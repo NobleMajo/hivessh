@@ -1,34 +1,47 @@
-import { SshChannelExit, StreamDataMapper } from "../SshExec.js"
-import { SshHost } from "../SshHost.js"
-import { Awaitable, filterEmpty } from "../utils/base.js"
-import { AbstractPackage, AbstractPackageManager, ApmInit } from "./apm.js"
+import { SshChannelExit, StreamDataMapper } from "../../SshExec.js"
+import { SshHost } from "../../SshHost.js"
+import { Awaitable, filterEmpty, trimAll } from "../../utils/base.js"
+import { AbstractPackage, AbstractPackageManager, ApmInit } from "../apm.js"
 
-export const yumEnv = {
+export const dnfEnv = {
     LANG: "en_US.UTF-8"
 }
 
-export const ignoreYumMessages: StreamDataMapper = (data: string) => {
-    const loweredData = data.toLowerCase()
-    if (
-        loweredData.includes("transaction completed") ||
-        loweredData.includes("base") ||
-        loweredData.includes("cleaning up") ||
-        loweredData.startsWith("warning:")
-    ) {
-        return undefined
+export const ignoredErrMsgs: string[] = [
+    "transaction completed",
+    "base",
+    "cleaning up",
+    "warning",
+]
+
+export const ignoreMessageFilter: StreamDataMapper = (
+    data: string
+) => {
+    let data2 = trimAll(data).toLowerCase()
+    for (const msg of ignoredErrMsgs) {
+        if (
+            data2.includes(msg)
+        ) {
+            return undefined
+        }
     }
     return data
 }
 
-export const parseYumList = (exit: SshChannelExit): string[] => {
+export const parseDnfList = (
+    exit: SshChannelExit
+): string[] => {
     const trimmedLines = filterEmpty(
         exit.out.split("\n")
     )
+
     const packages = trimmedLines.slice(1).map((line) => line.split(/\s+/)[0])
     return packages
 }
 
-export const parseYumDescription = (exit: SshChannelExit): AbstractPackage => {
+export const parseDnfDescription = (
+    exit: SshChannelExit
+): AbstractPackage => {
     const infoLines = exit.out.split("\n").filter((line) => line.includes(":"))
 
     const fields: { [key: string]: string } = {}
@@ -39,7 +52,7 @@ export const parseYumDescription = (exit: SshChannelExit): AbstractPackage => {
 
     if (!fields.hasOwnProperty("name") || !fields.hasOwnProperty("version")) {
         throw new Error(
-            "Required fields 'name' or 'version' missing in Yum package info"
+            "Required fields 'name' or 'version' missing in DNF package info"
         )
     }
 
@@ -51,34 +64,34 @@ export const parseYumDescription = (exit: SshChannelExit): AbstractPackage => {
     }
 }
 
-export const initYumApm: ApmInit = (
+export const initDnfApm: ApmInit = (
     sshHost: SshHost,
     cmdTimeoutMillis?: number | undefined,
 ): Awaitable<AbstractPackageManager> => {
     return {
-        type: "yum",
+        type: "dnf",
         sshHost,
 
         //### cache
         updateCache: async () => {
             return sshHost.exec(
-                "yum makecache",
+                'dnf makecache',
                 {
                     sudo: true,
                     timeoutMillis: cmdTimeoutMillis,
-                    mapErrOut: ignoreYumMessages,
-                    env: yumEnv,
+                    mapErrOut: ignoreMessageFilter,
+                    env: dnfEnv,
                 }
             ).then()
         },
         clearCache: async () => {
             return sshHost.exec(
-                "yum clean all",
+                'dnf clean all',
                 {
                     sudo: true,
                     timeoutMillis: cmdTimeoutMillis,
-                    mapErrOut: ignoreYumMessages,
-                    env: yumEnv,
+                    mapErrOut: ignoreMessageFilter,
+                    env: dnfEnv,
                 }
             ).then()
         },
@@ -86,77 +99,83 @@ export const initYumApm: ApmInit = (
         //### edit
         install: (...pkgs: string[]) =>
             sshHost.exec(
-                "yum install -y " + pkgs.join(" "),
+                "dnf install -y " + pkgs.join(" "),
                 {
                     sudo: true,
                     timeoutMillis: cmdTimeoutMillis,
-                    mapErrOut: ignoreYumMessages,
-                    env: yumEnv,
+                    mapErrOut: ignoreMessageFilter,
+                    env: dnfEnv,
                 }
             ).then(),
         uninstall: (...pkgs: string[]) =>
             sshHost.exec(
-                "yum remove -y " + pkgs.join(" "),
+                "dnf remove - y " + pkgs.join(" "),
                 {
                     sudo: true,
                     timeoutMillis: cmdTimeoutMillis,
-                    mapErrOut: ignoreYumMessages,
-                    env: yumEnv,
+                    mapErrOut: ignoreMessageFilter,
+                    env: dnfEnv,
                 }
             ).then(),
 
         //### maintenance
         upgradeAll: () =>
             sshHost.exec(
-                "yum upgrade -y",
+                "dnf upgrade -y",
                 {
                     sudo: true,
                     timeoutMillis: cmdTimeoutMillis,
-                    mapErrOut: ignoreYumMessages,
-                    env: yumEnv,
+                    mapErrOut: ignoreMessageFilter,
+                    env: dnfEnv,
                 }
             ).then(),
         uninstallUnused: () =>
             sshHost.exec(
-                "yum autoremove -y",
+                "dnf autoremove -y",
                 {
                     sudo: true,
                     timeoutMillis: cmdTimeoutMillis,
-                    mapErrOut: ignoreYumMessages,
-                    env: yumEnv,
+                    mapErrOut: ignoreMessageFilter,
+                    env: dnfEnv,
                 }
             ).then(),
 
         //### get
         list: () =>
             sshHost.exec(
-                "yum list installed",
+                "dnf list installed",
+
                 {
                     sudo: true,
                     timeoutMillis: cmdTimeoutMillis,
-                    mapErrOut: ignoreYumMessages,
-                    env: yumEnv,
+                    mapErrOut: ignoreMessageFilter,
+                    env: dnfEnv,
                 }
-            ).then(parseYumList),
+
+            ).then(parseDnfList),
         upgradable: () =>
             sshHost.exec(
-                "yum list updates",
+                "dnf list updates",
+
                 {
                     sudo: true,
                     timeoutMillis: cmdTimeoutMillis,
-                    mapErrOut: ignoreYumMessages,
-                    env: yumEnv,
+                    mapErrOut: ignoreMessageFilter,
+                    env: dnfEnv,
                 }
-            ).then(parseYumList),
+
+            ).then(parseDnfList),
         describe: (pkg: string) =>
             sshHost.exec(
-                "yum info " + pkg,
+                "dnf info ${ pkg }",
+
                 {
                     sudo: true,
                     timeoutMillis: cmdTimeoutMillis,
-                    mapErrOut: ignoreYumMessages,
-                    env: yumEnv,
+                    mapErrOut: ignoreMessageFilter,
+                    env: dnfEnv,
                 }
-            ).then(parseYumDescription),
+
+            ).then(parseDnfDescription),
     }
 }

@@ -2,9 +2,9 @@ import { SshHost } from "../SshHost.js"
 import { Awaitable } from "../utils/base.js"
 import { AbstractPackageManager } from "./ApmInterface.js"
 import { AbstractPackageManagerWrapper } from "./apm.js"
-import { initAptApm } from "./apt.js"
-import { initDnfApm } from "./dnf.js"
-import { initYumApm } from "./yum.js"
+import { initAptApm } from "./impl/apt.js"
+import { initDnfApm } from "./impl/dnf.js"
+import { initYumApm } from "./impl/yum.js"
 
 export type ApmInit = (
     sshHost: SshHost
