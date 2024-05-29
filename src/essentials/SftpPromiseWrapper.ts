@@ -426,7 +426,7 @@ export function createSFTPPromiseWrapper(
 
     ret.readdir2 = ret.readdir
     ret.readdir = (...params: any[]) => new Promise<FileStat[]>(
-        (res, rej) => ret.readdir(
+        (res, rej) => ret.readdir2(
             ...params,
             (err: any, value: FileEntryWithStats[]) => err ? rej(err) : res(
                 value.map(
