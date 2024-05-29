@@ -19,3 +19,4 @@ dist/**/*.js.map
 
 # tests
 dist/test/**/*
+dist/**/*.test.ts

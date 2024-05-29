@@ -7,6 +7,7 @@
   "scripts": {
     "start": "node --enable-source-maps dist/index.js",
     "build": "tsc",
+    "testl": "tsc && node --env-file=.env --enable-source-maps dist/test/ubuntuServer.test.js",
     "exec": "tsc && node --enable-source-maps dist/index.js",
     "dev": "nodemon -w ./src --ext *.ts -x \"tsc && node --enable-source-maps dist/index.js\""
   },
