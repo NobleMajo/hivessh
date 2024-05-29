@@ -109,9 +109,20 @@ export class SshHost {
     }
 
     /**
+     * @deprecated Use disconnect()
      * @description Closes the ssh socket if still connected
      */
     close(): void {
+        if (this.connected) {
+            this.ssh.end()
+        }
+        this.connected = false
+    }
+
+    /**
+     * @description Closes the ssh socket if still connected
+     */
+    disconnect(): void {
         if (this.connected) {
             this.ssh.end()
         }
