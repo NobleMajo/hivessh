@@ -42,6 +42,10 @@ export async function fetchOsRelease(
             const i = varLine.indexOf("=")
 
             const key = varLine.slice(0, i)
+            if (key.length == 0) {
+                continue
+            }
+
             let value = varLine.slice(i + 1)
 
             while (
