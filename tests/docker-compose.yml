@@ -1,0 +1,26 @@
+version: '3'
+
+services:
+  ubuntu-ssh-test:
+    pull_policy: build
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - $HOME/.ssh/id_rsa.pub:/root/.ssh/authorized_keys
+    restart: no
+  ubuntu-ssh-test:
+    pull_policy: build
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - $HOME/.ssh/id_rsa:/root/.ssh/id_rsa
+    restart: no
+
+
+
+
+        depends_on:
+      - db
+      - redis

@@ -1,0 +1,16 @@
+FROM ubuntu:22.04
+
+RUN apt-get update && apt-get install -y \
+    openssh-server \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN mkdir /var/run/sshd
+
+RUN sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
+
+EXPOSE 22
+VOLUME /root/.ssh
+
+RUN mkdir -p /root/.ssh && chmod 700 /root/.ssh
+
+CMD ["/usr/sbin/sshd", "-D"]
