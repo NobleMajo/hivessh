@@ -23,6 +23,11 @@ if (isNaN(Number(process.env.UBUNTU_TEST_PORT))) {
     )
 }
 
+process.env.UBUNTU_TEST_KEYPATH =
+    process.env.UBUNTU_TEST_KEYPATH
+        .split("$HOME")
+        .join(process.env.HOME)
+
 const host = await SshHost.connect({
     host: process.env.UBUNTU_TEST_HOST,
     user: process.env.UBUNTU_TEST_USER,
@@ -99,3 +104,43 @@ if (neofetchExists) {
 
 host.close()
 console.info("Works!")
+
+/*
+Example test output:
+
+Load os release info...
+- os release:  {
+  distroName: 'ubuntu',
+  distroVersion: '22.04',
+  meta: {
+    PRETTY_NAME: 'Ubuntu 22.04.4 LTS',
+    NAME: 'Ubuntu',
+    VERSION_ID: '22.04',
+    VERSION: '22.04.4 LTS (Jammy Jellyfish)',
+    VERSION_CODENAME: 'jammy',
+    ID: 'ubuntu',
+    ID_LIKE: 'debian',
+    HOME_URL: 'https://www.ubuntu.com/',
+    SUPPORT_URL: 'https://help.ubuntu.com/',
+    BUG_REPORT_URL: 'https://bugs.launchpad.net/ubuntu/',
+    PRIVACY_POLICY_URL: 'https://www.ubuntu.com/legal/terms-and-policies/privacy-policy',
+    UBUNTU_CODENAME: 'jammy',
+    DISTRIB_ID: 'Ubuntu',
+    DISTRIB_RELEASE: '22.04',
+    DISTRIB_CODENAME: 'jammy',
+    DISTRIB_DESCRIPTION: 'Ubuntu 22.04.4 LTS'
+  }
+}
+Load apm...
+- apm.type: apt
+Update cache...
+Update packages...
+List installed packages...
+- installedPackages:  753
+- neofetchExists:  false
+Install neofetch...
+- neofetchExists:  true
+Uninstall neofetch...
+- neofetchExists:  false
+Works!
+*/
