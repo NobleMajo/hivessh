@@ -1,6 +1,6 @@
 {
   "name": "hivessh",
-  "version": "1.0.12",
+  "version": "1.0.13",
   "description": "HiveSsh simplifies SSH2 connections via promise-based task execution on Linux servers with built-in server utilities and powerful command execution functions",
   "main": "dist/index.js",
   "type": "module",
@@ -45,9 +45,6 @@
     "email": "majo@coreunit.net",
     "url": "https://github.com/NobleMajo"
   },
-  "os": [
-    "!win32"
-  ],
   "homepage": "https://github.com/NobleMajo/hivelib",
   "bugs": {
     "url": "https://github.com/NobleMajo/hivelib/issues"
