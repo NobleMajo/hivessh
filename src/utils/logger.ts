@@ -47,7 +47,7 @@ export function getLogTypeByLevel(
         }
     }
 
-    if (!customLogType[level]) {
+    if (customLogType[level]) {
         return {
             name: customLogType[level].name,
             short: (customLogType[level].short)
@@ -62,9 +62,6 @@ export function getLogTypeByLevel(
         name: "Unknown",
         short: "UNK",
     }
-
-
-
 }
 
 export interface Log {
