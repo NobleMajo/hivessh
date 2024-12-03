@@ -1,0 +1,38 @@
+name: Update npm dependencies
+
+on:
+  schedule:
+    - cron: '30 12 7,21 * *'
+  workflow_dispatch:
+
+jobs:
+  update-dependencies:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: 20
+        cache: 'npm'
+
+    - name: Update npm dependencies
+      run: |
+        npm version patch --no-git-tag-version
+        npm update
+        npm run build
+        npm run test --if-present
+
+    - name: Commit and push changes
+      uses: EndBug/add-and-commit@v9
+      with:
+        add: 'package*.json'
+        author_name: 'github-actions[bot]'
+        author_email: 'github-actions[bot]@users.noreply.github.com'
+        fetch: false
+        message: 'Npm deps update'
+        pathspec_error_handling: exitImmediately
+        pull: '--rebase --autostash'
