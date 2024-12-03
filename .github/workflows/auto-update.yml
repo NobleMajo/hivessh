@@ -10,7 +10,7 @@ permissions:
   contents: write
 
 jobs:
-  update-dependencies:
+  update-deps:
     runs-on: ubuntu-latest
 
     steps:
@@ -35,3 +35,32 @@ jobs:
       with:
         add: 'package*.json'
         message: 'Bot: npm deps update'
+
+    - name: Update npm dependencies
+      run: |
+        npm version patch --no-git-tag-version
+        npm update
+        npm run build
+        npm run test --if-present
+
+    - uses: actions/upload-artifact@v4
+      with:
+        name: build-artifacts
+        path: dist
+
+  publish-npm:
+    needs: update-deps
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 20
+          registry-url: https://registry.npmjs.org/
+      - uses: actions/download-artifact@v4
+        with:
+          name: build-artifacts
+          path: dist
+      - run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
