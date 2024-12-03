@@ -1,6 +1,7 @@
 name: NPM Publish
 
 on:
+  workflow_dispatch:
   push:
     branches: [ "main" ]
     paths:
@@ -28,28 +29,6 @@ jobs:
       with:
         name: build-artifacts
         path: dist
-
-  # publish-gpr:
-  #   needs: build
-  #   runs-on: ubuntu-latest
-  #   permissions:
-  #     contents: read
-  #     packages: write
-  #   steps:
-  #     - uses: actions/checkout@v4
-  #     - uses: actions/setup-node@v3
-  #       with:
-  #         node-version: 20
-  #     - uses: actions/download-artifact@v4
-  #       with:
-  #         name: build-artifacts
-  #         path: dist
-  #     - run: |
-  #         npm config set registry "https://npm.pkg.github.com/"
-  #         npm config set scope "@${{ github.repository_owner }}"
-  #         npm publish
-  #       env:
-  #         NODE_AUTH_TOKEN: ${{ github.token	 }}
 
   publish-npm:
     needs: build
