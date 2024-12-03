@@ -45,13 +45,13 @@
     "email": "majo@coreunit.net",
     "url": "https://github.com/NobleMajo"
   },
-  "homepage": "https://github.com/NobleMajo/hivelib",
+  "homepage": "https://github.com/NobleMajo/hivessh",
   "bugs": {
-    "url": "https://github.com/NobleMajo/hivelib/issues"
+    "url": "https://github.com/NobleMajo/hivessh/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com:NobleMajo/hivelib.git"
+    "url": "git@github.com:NobleMajo/hivessh.git"
   },
   "license": "MIT",
   "devDependencies": {
