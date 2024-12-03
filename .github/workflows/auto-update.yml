@@ -1,9 +1,13 @@
-name: Update npm dependencies
+name: auto-update
+run-name: Update npm dependencies
 
 on:
   schedule:
     - cron: '30 12 4,18 * *'
   workflow_dispatch:
+
+permissions:
+  contents: write
 
 jobs:
   update-dependencies:
