@@ -1,4 +1,5 @@
-name: First interaction greetings
+name: first-interaction-greetings
+run-name: First interaction greetings
 
 on: [pull_request_target, issues]
 
