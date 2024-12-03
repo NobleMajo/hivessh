@@ -2,7 +2,7 @@ name: Update npm dependencies
 
 on:
   schedule:
-    - cron: '30 12 7,21 * *'
+    - cron: '30 12 4,18 * *'
   workflow_dispatch:
 
 jobs:
@@ -26,8 +26,16 @@ jobs:
         npm run build
         npm run test --if-present
 
+    - name: Create Private Key for SSH
+      run: |
+        touch /tmp/github-actions-bot
+        chmod 600 /tmp/github-actions-bot
+        echo "${{ secrets.REPO_DEPLOY_KEY }}" > /tmp/github-actions-bot
+
     - name: Commit and push changes
       uses: EndBug/add-and-commit@v9
+      env:
+        GIT_SSH_COMMAND: "ssh -i /tmp/github-actions-bot -o StrictHostKeyChecking=no"
       with:
         add: 'package*.json'
         author_name: 'github-actions[bot]'
@@ -36,3 +44,8 @@ jobs:
         message: 'Npm deps update'
         pathspec_error_handling: exitImmediately
         pull: '--rebase --autostash'
+
+    - name: Cleanup
+      run: |
+        unset REPO_DEPLOY_KEY
+        rm -rf /tmp/*
