@@ -15,28 +15,33 @@ jobs:
       with:
         repo-token: ${{ secrets.GITHUB_TOKEN }}
         issue-message: |
-            👋 Hello!
+            👋 Hii!
           
-            Welcome to the repository, and thank you for opening an issue. 🎉 We're excited to have you contribute! Please make sure to include all the relevant details to help us understand your report or suggestion.
+            Welcome to the repository, and thank you for opening an issue. 🎉
+            We're excited to have you contribute!
+            Please make sure to include all the relevant details to help us understand your report or suggestion.
           
-            If you’re new here, take a moment to review our [contribution guidelines](./CONTRIBUTING.md) and [code of conduct](./CODE_OF_CONDUCT.md). These documents will help you collaborate effectively and ensure a positive experience for everyone.
+            If you’re new here, take a moment to review our [contribution guidelines](../blob/main/CONTRIBUTING.md).
+            These document will help you collaborate effectively and ensure a positive experience for everyone.
           
-            We're here to help—feel free to reach out if you have any questions. 🚀
-          
-            Thank you, and happy coding! 💻
+            We appreciate your effort and look forward to collaborating with you! 🚀
+            When chatting, please don't forget that we are human beings and that we do this with our own dedication and out of joy.
+            
+            Cheers ❤️
         pr-message: |
-          👋 Hi!
+          👋 Hii!
         
           Welcome, and thank you for opening your first pull request with us! 🎉 We're thrilled to see your contribution.
         
           Before we review, please ensure that:
-          - You've followed the [contribution guidelines](./CONTRIBUTING.md).
+          - You've followed the [contribution guidelines](../blob/main/CONTRIBUTING.md).
           - Your changes are thoroughly tested and documented (if applicable).
-          - The PR description includes all necessary details for the reviewers.
+          - The PR description includes all changes and necessary details for the reviewers.
         
-          Our team will review your submission as soon as possible. In the meantime, feel free to ask any questions or provide additional context to help with the review process.
+          Our team will review your submission as soon as possible.
+          In the meantime, feel free to ask any questions or provide additional context to help with the review process.
         
           We appreciate your effort and look forward to collaborating with you! 🚀
-        
-          Cheers,  
-          The Team ❤️
+          When chatting, please don't forget that we are human beings and that we do this with our own dedication and out of joy.
+          
+          Cheers ❤️
