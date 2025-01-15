@@ -12,9 +12,9 @@
 <!-- ![](https://img.shields.io/badge/dynamic/json?color=darkred&label=open%20issues&query=open_issues&suffix=x&url=https%3A%2F%2Fapi.github.com%2Frepos%2Fnoblemajo%2Fhivessh)
 ![](https://img.shields.io/badge/dynamic/json?color=orange&label=subscribers&query=subscribers_count&suffix=x&url=https%3A%2F%2Fapi.github.com%2Frepos%2Fnoblemajo%2Fhivessh) -->
 
-HiveSsh simplifies SSH2 connections via promise-based task execution on Linux servers with built-in server utilities and powerful command execution functions.
+HiveSsh is an innovative library designed to streamline SSH2 connections and simplify task execution on Linux servers.
 
-HiveSsh is a library designed to streamline SSH2 connections and task execution on Linux servers. It provides user-friendly promise-based functions for efficient server operations without the need for a client application.
+It wraps around the ssh2-library, offering a [promise-based approach](#promisified) to avoid nested callbacks and adding useful features like [command existence checks](#command-existence-checks) and persistent [exec sessions](#exec-session).
 
 ----
 
@@ -33,6 +33,12 @@ HiveSsh is a library designed to streamline SSH2 connections and task execution 
 - [Contributing](#contributing)
 - [License](#license)
 - [Disclaimer](#disclaimer)
+
+# SSH2
+The term `ssh2` has two meanings here, the `secure shell protocol` and the `npm library`. 
+When referring to the npm library, this repo will always refer to it as the `ssh2`-library.
+
+HiveSsh is a wrapper library of the `ssh2`-library with additional features and promise-based task execution instead of a callback function approach.
 
 # Key Features
 HiveSsh offers the following key features:
@@ -88,7 +94,7 @@ const myHost = await SshHost.connect({
 Here are some using examples:
 
 ## Promisified
-### Execute and assets
+### Execute
 
 After connecting an `SshHost`, you can use the promisified execution (and other asset features) directly on the `SshHost` instance.
 ```ts
@@ -96,6 +102,19 @@ After connecting an `SshHost`, you can use the promisified execution (and other 
 const homeDirFiles = await myHost.exec("ls -al")
 console.log("Home dir files:\n", homeDirFiles.out)
 ```
+
+### Execute at
+
+You can also execute commands on absolut path:
+```ts
+const etcDirFiles = await myHost.exec(
+  "ls -al",
+  { pwd: "/etc" }
+)
+console.log("Etc files: ", etcDirFiles.out)
+```
+
+### Command existence checks
 
 Get the hosts public ip address:
 ```ts
@@ -109,15 +128,6 @@ if(!curlExists){
 const myIp = await myHost.exec("curl ifconfig.me")
 console.log("Host public ip: " + myIp.out)
 //other sources: `api.ipify.org`, `ipinfo.io/ip` or `ipecho.net/plain`
-```
-
-You can also execute commands on absolut path:
-```ts
-const etcDirFiles = await myHost.exec(
-  "ls -al",
-  { pwd: "/etc" }
-)
-console.log("Etc files: ", etcDirFiles.out)
 ```
 
 Also a git example:
@@ -218,7 +228,7 @@ session.exec("node myApp.js")
 HiveSsh is built using the following technologies:
 - **TypeScript**
 - **Node.js**
-- **SSH2** ([NPM Package](https://www.npmjs.com/package/ssh2) & Protocol)
+- [`ssh2`-library](https://www.npmjs.com/package/ssh2)
 
 # Contributing
 Contributions to this project are welcome!  
