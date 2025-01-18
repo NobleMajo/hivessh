@@ -1,9 +1,16 @@
 {
   "name": "hivessh",
-  "version": "1.1.12",
+  "version": "1.2.0",
   "description": "HiveSsh is an innovative library designed to streamline SSH2 connections and simplify task execution on Linux servers.",
-  "main": "dist/index.js",
   "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    "types": "./dist/index.d.ts",
+    "import": "./dist/index.js",
+    "require": "./dist/index.cjs"
+  },
   "scripts": {
     "start": "node --enable-source-maps dist/index.js",
     "build": "tsc",
@@ -31,27 +38,25 @@
     "automation",
     "auto",
     "provisioning",
-    "TypeScript",
     "scalable",
     "managing",
     "manage",
     "promise",
     "async",
-    "tool"
+    "tool",
+    "typescript",
+    "opensource"
   ],
-  "author": {
-    "name": "Majo Richter",
-    "alias": "NobleMajo",
-    "email": "majo@coreunit.net",
-    "url": "https://github.com/NobleMajo"
-  },
   "homepage": "https://github.com/NobleMajo/hivessh",
-  "bugs": {
-    "url": "https://github.com/NobleMajo/hivessh/issues"
-  },
   "repository": {
     "type": "git",
-    "url": "git@github.com:NobleMajo/hivessh.git"
+    "url": "git+https://github.com/NobleMajo/hivessh.git"
+  },
+  "bugs": "https://github.com/NobleMajo/hivessh/issues",
+  "author": {
+    "name": "NobleMajo",
+    "email": "majo@coreunit.net",
+    "url": "https://noblemajo.de/en/"
   },
   "license": "MIT",
   "devDependencies": {
