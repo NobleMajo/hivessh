@@ -36,14 +36,8 @@ jobs:
         add: 'package*.json'
         message: 'Bot: npm deps update'
 
-    - name: Update npm dependencies
-      run: |
-        npm version patch --no-git-tag-version
-        npm update
-        npm run build
-        npm run test --if-present
-
-    - uses: actions/upload-artifact@v4
+    - name: Store build artifacts
+      uses: actions/upload-artifact@v4
       with:
         name: build-artifacts
         path: |
@@ -54,15 +48,22 @@ jobs:
     needs: update-deps
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v3
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
         with:
           node-version: 20
           registry-url: https://registry.npmjs.org/
-      - uses: actions/download-artifact@v4
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
         with:
           name: build-artifacts
           path: dist
-      - run: npm publish
+
+      - name: Publish to npm
+        run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
