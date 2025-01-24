@@ -14,7 +14,7 @@
 
 HiveSsh is an innovative library designed to streamline SSH2 connections and simplify task execution on Linux servers.
 
-It wraps around the ssh2-library, offering a [promise-based approach](#promisified) to avoid nested callbacks and adding useful features like [command existence checks](#command-existence-checks) and persistent [exec sessions](#exec-session).
+It wraps around the ssh2-library, providing a [promise-based approach](#promisified) to avoid nested callbacks and adding useful features such as [command existence checking](#command-existence-checks) and persistent [exec sessions](#exec-session).
 
 ----
 
@@ -40,11 +40,10 @@ When referring to the npm library, this repo will always refer to it as the `ssh
 
 HiveSsh is a wrapper library of the `ssh2`-library with additional features and promise-based task execution instead of a callback function approach.
 
-# Key Features
-HiveSsh offers the following key features:
+# Key features
+HiveSsh provides the following key features:
 - __All-Distributions__: SSH2 and SFTP operations for all Linux servers
-- __Promisified__: Promise-based functions for ease of use
-
+- __Promisified__: Promise-based operations for ease of use
 - __AbstractPackageManager__: Built-in abstract package manager with support for apt, dnf, and yum, with additional configurability
 - __Exec__: Command execution utilities for event or promise-based error handling and output parsing, filtering, and mapping
 
@@ -96,7 +95,7 @@ Here are some using examples:
 ## Promisified
 ### Execute
 
-After connecting an `SshHost`, you can use the promisified execution (and other asset features) directly on the `SshHost` instance.
+After connecting a `SshHost`, you can use the promisified execution (and other asset features) directly on the `SshHost` instance.
 ```ts
 // check files in user home dir
 const homeDirFiles = await myHost.exec("ls -al")
@@ -158,9 +157,12 @@ const myBinary: Buffer = await myHost.sftp.readFile("/home/tester/my-binary")
 const exampleConfig: string = await myHost.sftp.readFile("/etc/example/config.yml", "utf8")
 ```
 
-## AbstractPackageManager
-With the abstract package manager (`apm`) you can use `apt`, `dnf`, `yum` or a `custom implemented package manager` via one interface.
-The apm features are limited and general, but you can update your system and install, delete and list your packages.
+You can find the types in the [npmjs.com build](https://www.npmjs.com/package/hivessh?activeTab=code) (at /dist/essentials/SftpPromiseWrapper.d.ts).
+You can also check out the `ssh2`-library [sftp docs](https://github.com/mscdex/ssh2/blob/master/SFTP.md) for more background.
+
+## Abstract Package Manager
+The abstract package manager (aka `apm`) allows you to use `apt`, `dnf`, `yum` or a `custom implemented package manager` from one interface.
+The `apm` features are limited and generic, but you can upgrade your system and install, remove and list your packages.
 
 ```ts
 // upgrade all packages using the abstract package manager
@@ -172,14 +174,14 @@ await apm.upgradeAll()
 await apm.install("git")
 ```
 
-### Custom package manager
+### Custom apm
 
-For creating a custon apm you need to implement the following typescript interface:
+To create a custom `apm`, you need to implement the following typescript interface:
 [https://github.com/NobleMajo/hivessh/blob/main/src/apm/ApmInterface.ts](https://github.com/NobleMajo/hivessh/blob/main/src/apm/ApmInterface.ts)
 
 ### Register package manager
 
-After implementing the custom package manager you need to register it global via a checker function:
+After implementing the custom package manager, you need to register it globally using a checker function:
 ```ts
 import { apmChecker, AbstractPackageManager } from "./apm/apm.js"
 
@@ -195,8 +197,7 @@ apmChecker.push(async (host) => {
 This function is called when the `getApm()` is called and can return a package manager depending on the host.
 
 ## Exec Session
-Sessions are available so that the PWD (process working directory) and environment do not have to be specified for every single command.
-These sessions store that persistent settings across multiple executions and can even resolve relative paths.
+Sessions are available so that the PWD (process working directory) and environment do not have to be specified for each individual command. These sessions store these settings persistently across multiple executions and can even resolve relative paths.
 
 ```ts
 const session = host.session("/etc/example")
@@ -232,12 +233,11 @@ HiveSsh is built using the following technologies:
 
 # Contributing
 Contributions to this project are welcome!  
-Interested users can refer to the guidelines provided in the [CONTRIBUTING.md](CONTRIBUTING.md) file to contribute to the project and help improve its functionality and features.
+Interested users can follow the guidelines provided in the [CONTRIBUTING.md](CONTRIBUTING.md) file to contribute to the project and help improve its functionality and features.
 
 # License
-This project is licensed under the [MIT license](LICENSE), providing users with flexibility and freedom to use and modify the software according to their needs.
+This project is licensed under the [MIT](LICENSE) license, which provides users with the flexibility and freedom to use and modify the software according to their needs.
 
 # Disclaimer
-This project is provided without warranties.  
-Users are advised to review the accompanying license for more information on the terms of use and limitations of liability.
-
+This project is provided "as is".  
+Users are advised to consult the accompanying licence for further information on terms of use and limitations of liability.
