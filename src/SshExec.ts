@@ -364,7 +364,7 @@ export function sshChannelToPromise(
 
         channel.once(
             "close",
-            () => rej(new Error("Ssh channel closed, check why the socket was closed or lost connection"))
+            (...params: any[]) => channel.emit("exit", ...params)
         )
 
         channel.once("exit", (
