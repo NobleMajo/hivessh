@@ -16,23 +16,22 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
 
-    - name: Set up Node.js
-      uses: actions/setup-node@v3
+    - name: Set up Bun.js
+      uses: oven-sh/setup-bun@v2
       with:
-        node-version: 20
-        cache: 'npm'
+        bun-version: latest
 
-    - name: Update npm dependencies
+    - name: Update bun dependencies
       run: |
-        npm ci
-        npm run build
-        npm run test --if-present
+        bun i
+        bun run build
+        bun run test --if-present
 
     - name: Commit and push changes
       uses: EndBug/add-and-commit@v9
       with:
         add: 'package*.json'
-        message: 'Bot: npm deps update'
+        message: 'Bot: bun deps update'
 
     - name: Store build artifacts
       uses: actions/upload-artifact@v4
@@ -49,18 +48,23 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
+      - name: Set up Bun.js
+        uses: oven-sh/setup-bun@v2
         with:
-          node-version: 20
-          registry-url: https://registry.npmjs.org/
+          bun-version: latest
 
       - name: Download build artifacts
         uses: actions/download-artifact@v4
         with:
           name: build-artifacts
+
+      - name: Prepare npm build
+        run: |
+          echo "//registry.npmjs.org/:_authToken=\${NODE_AUTH_TOKEN}" > .npmrc
+          sed -i 's!./src!./dist!g' ./package.json
+          bun i
           
-      - name: Publish to npm
-        run: npm publish
+      - name: Publish to npmjs.com
+        run: bun publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

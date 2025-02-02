@@ -12,11 +12,9 @@
     "require": "./dist/index.cjs"
   },
   "scripts": {
-    "start": "node --enable-source-maps dist/index.js",
-    "build": "tsc",
-    "testl": "tsc && node --env-file=.env --enable-source-maps dist/test/e2e-concurrent-exec.test.js",
-    "exec": "tsc && node --enable-source-maps dist/index.js",
-    "dev": "nodemon -w ./src --ext *.ts -x \"tsc && node --enable-source-maps dist/index.js\""
+    "bump": "bun --print \"const pkg = await Bun.file('package.json').json(); pkg.version = pkg.version.split('.').map((v, i) => i===2?+v+1:v).join('.'); await Bun.write('package.json', JSON.stringify(pkg, null, 2)); export default pkg.version\"",
+    "test": "bun test",
+    "build": "bun run .github/build.ts"
   },
   "keywords": [
     "ssh",
@@ -60,10 +58,12 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "@types/node": "^20.12.7",
-    "@types/ssh2": "^1.15.0",
-    "nodemon": "^3.1.0",
-    "typescript": "^5.4.3"
+    "bun-plugin-dts": "^0.3.0",
+    "@types/bun": "^1.2.0",
+    "@types/ssh2": "^1.15.0"
+  },
+  "peerDependencies": {
+    "typescript": "^5.6.2"
   },
   "dependencies": {
     "ssh2": "^1.15.0"
