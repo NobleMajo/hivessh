@@ -386,14 +386,15 @@ const singleValueErrorCallbacks = [
     ...booleanMethods,
 ]
 
-const fsStatsMethods = [
-    "readdir",
-]
+// unused leftover
+// const fsStatsMethods = [
+//     "readdir",
+// ]
 
-const otherMethods = [
-    "read"
-]
-
+// unused leftover
+// const otherMethods = [
+//     "read"
+// ]
 
 export type SFTPPromiseWrapper = SFTPPromiseInterface & Omit<SFTPWrapper, keyof SFTPPromiseInterface>
 
@@ -402,6 +403,7 @@ export function createSFTPPromiseWrapper(
 ): SFTPPromiseWrapper {
     const ret: any = sourceWrapper
 
+    // promisify void methods
     for (const voidMethod of voidMethods) {
         const altName = voidMethod + "2"
         ret[altName] = ret[voidMethod]
@@ -413,6 +415,7 @@ export function createSFTPPromiseWrapper(
         )
     }
 
+    // promisify value methods
     for (const bufferMethod of singleValueErrorCallbacks) {
         const altName = bufferMethod + "2"
         ret[altName] = ret[bufferMethod]
@@ -424,6 +427,7 @@ export function createSFTPPromiseWrapper(
         )
     }
 
+    // promisify readdir method
     ret.readdir2 = ret.readdir
     ret.readdir = (...params: any[]) => new Promise<FileStat[]>(
         (res, rej) => ret.readdir2(
@@ -436,6 +440,7 @@ export function createSFTPPromiseWrapper(
         )
     )
 
+    // promisify read method
     ret.read2 = ret.read
     ret.read = (...params: any[]) => new Promise<[number, Buffer, number]>(
         (res, rej) => ret.read2(

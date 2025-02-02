@@ -53,7 +53,7 @@ export type SshChannelToPromise = (options?: ChannelToPromiseOptions) => Promise
 
 export interface SshChannelExtras {
     cmd: string,
-    timeout?: NodeJS.Timeout | undefined,
+    timeout?: Timer | undefined,
     settings: CmdChannelSettings,
     stdout: Readable,
     toPromise: SshChannelToPromise
