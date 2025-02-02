@@ -1,6 +1,6 @@
 {
   "name": "hivessh",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "HiveSsh is an innovative library designed to streamline SSH2 connections and simplify task execution on Linux servers.",
   "type": "module",
   "main": "./dist/index.cjs",
@@ -14,7 +14,7 @@
   "scripts": {
     "start": "node --enable-source-maps dist/index.js",
     "build": "tsc",
-    "testl": "tsc && node --env-file=.env --enable-source-maps dist/test/ubuntuServer.test.js",
+    "testl": "tsc && node --env-file=.env --enable-source-maps dist/test/e2e-concurrent-exec.test.js",
     "exec": "tsc && node --enable-source-maps dist/index.js",
     "dev": "nodemon -w ./src --ext *.ts -x \"tsc && node --enable-source-maps dist/index.js\""
   },

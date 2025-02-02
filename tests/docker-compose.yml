@@ -17,10 +17,6 @@ services:
     volumes:
       - $HOME/.ssh/id_rsa:/root/.ssh/id_rsa
     restart: no
-
-
-
-
-        depends_on:
+    depends_on:
       - db
       - redis
