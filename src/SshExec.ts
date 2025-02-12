@@ -10,18 +10,21 @@ export interface ArrayOptions {
 
 export interface CmdChannelOptions extends ExecOptions {
     pwd?: string,
+    env?: NodeJS.ProcessEnv,
     timeoutMillis?: number,
     sudo?: boolean,
 }
 
 export interface CmdChannelSettings extends ExecOptions {
     pwd: string,
+    env: NodeJS.ProcessEnv | undefined,
     timeoutMillis: number,
     sudo: boolean,
 }
 
 export const defaultCmdChannelSettings: CmdChannelSettings = {
     pwd: "/",
+    env: undefined,
     timeoutMillis: -1,
     sudo: false,
 }
