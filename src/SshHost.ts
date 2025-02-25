@@ -1,8 +1,10 @@
+import net from "net"
 import { ClientChannel, ClientErrorExtensions, SFTPWrapper, Client as SshClient } from "ssh2"
 import { ExecSession } from "./ExecSession.js"
 import { handleHops } from "./HostHop.js"
 import { CmdChannelOptions, CmdExecOptions, SshChannel, SshChannelExit, execSshChannel } from "./SshExec.js"
 import { SshHostOptions, SshHostSettings, loadSettings } from "./SshHostOptions.js"
+import { SshTunnelOutOptions, tunnelOut } from "./SshTunnel.js"
 import { AbstractPackageManager, getApm } from "./apm/apm.js"
 import { OsRelease, fetchOsRelease } from "./essentials/OsRelease.js"
 import { SFTPPromiseWrapper, createSFTPPromiseWrapper } from "./essentials/SftpPromiseWrapper.js"
@@ -279,6 +281,8 @@ export class SshHost {
         })
     }
 
+
+
     cachedApm: AbstractPackageManager | undefined
 
     /**
@@ -305,5 +309,26 @@ export class SshHost {
         ).then((apm) => {
             return this.cachedApm = apm
         })
+    }
+
+    /**
+     * @experimental This function is experimental and may not be stable.
+     * Creates a local server that tunnels incoming connections to a remote linux socket or host and port bind.
+     *
+     * You need to close the server to stop tunneling!
+     * 
+     * This function creates a server that listens for incoming connections and forwards them to the remote SSH host. 
+     * 
+     * @param tunnelOptions - Options specifying remote linux socket or host and port details.
+     * 
+     * @returns A promise that resolves to the created server that need to be closed.
+     */
+    tunnelOut(
+        tunnelOptions: SshTunnelOutOptions,
+    ): Promise<net.Server> {
+        return tunnelOut(
+            this.ssh,
+            tunnelOptions
+        )
     }
 }
