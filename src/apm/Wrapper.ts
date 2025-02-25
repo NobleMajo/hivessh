@@ -2,6 +2,9 @@ import { SshHost } from "../SshHost.js"
 import { Awaitable } from "../utils/base.js"
 import { AbstractPackage, AbstractPackageManager } from "./ApmInterface.js"
 
+/**
+ * @deprecated The AbstractPackageManager (APM) feature will be removed in the future to more focus on the core problems and solutions
+ */
 export class AbstractPackageManagerWrapper {
     type: string
     sshHost: SshHost
@@ -29,6 +32,7 @@ export class AbstractPackageManagerWrapper {
 
     //### cache
     /**
+     * @deprecated The AbstractPackageManager (APM) feature will be removed in the future to more focus on the core problems and solutions
      * @description Update package source cache
      */
     updateCache(
@@ -62,6 +66,7 @@ export class AbstractPackageManagerWrapper {
             })
     }
     /**
+     * @deprecated The AbstractPackageManager (APM) feature will be removed in the future to more focus on the core problems and solutions
      * @description Clear package source cache
      */
     clearCache(): Awaitable<void> {
@@ -78,6 +83,7 @@ export class AbstractPackageManagerWrapper {
 
     //### edit
     /**
+     * @deprecated The AbstractPackageManager (APM) feature will be removed in the future to more focus on the core problems and solutions
      * @description Install defined packages
      */
     install(...pkgs: string[]): Awaitable<void> {
@@ -92,6 +98,7 @@ export class AbstractPackageManagerWrapper {
         return this.apm.install(...pkgs)
     }
     /**
+     * @deprecated The AbstractPackageManager (APM) feature will be removed in the future to more focus on the core problems and solutions
      * @description Uninstall defined packages
      */
     uninstall(...pkgs: string[]): Awaitable<void> {
@@ -108,6 +115,7 @@ export class AbstractPackageManagerWrapper {
 
     //### maintenance
     /**
+     * @deprecated The AbstractPackageManager (APM) feature will be removed in the future to more focus on the core problems and solutions
      * @description Upgrades all upgradable packages
      */
     upgradeAll(
@@ -141,6 +149,7 @@ export class AbstractPackageManagerWrapper {
             })
     }
     /**
+     * @deprecated The AbstractPackageManager (APM) feature will be removed in the future to more focus on the core problems and solutions
      * @description Uninstall unused packages
      */
     uninstallUnused(
@@ -176,6 +185,7 @@ export class AbstractPackageManagerWrapper {
 
     //### get
     /**
+     * @deprecated The AbstractPackageManager (APM) feature will be removed in the future to more focus on the core problems and solutions
      * @description List of installed packages
      */
     list(): Awaitable<string[]> {
@@ -189,6 +199,7 @@ export class AbstractPackageManagerWrapper {
         return this.apm.list()
     }
     /**
+     * @deprecated The AbstractPackageManager (APM) feature will be removed in the future to more focus on the core problems and solutions
      * @description List upgradable packages
      */
     upgradable(): Awaitable<string[]> {
@@ -202,6 +213,7 @@ export class AbstractPackageManagerWrapper {
         return this.apm.upgradable()
     }
     /**
+     * @deprecated The AbstractPackageManager (APM) feature will be removed in the future to more focus on the core problems and solutions
      * @description Returns a package description
      */
     describe(pkg: string): Awaitable<AbstractPackage> {

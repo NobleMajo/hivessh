@@ -3,10 +3,16 @@ import { SshHost } from "../../SshHost.js"
 import { Awaitable, filterEmpty, trimAll } from "../../utils/base.js"
 import { AbstractPackage, AbstractPackageManager, ApmInit } from "../apm.js"
 
+/**
+ * @deprecated The AbstractPackageManager (APM) feature will be removed in the future to more focus on the core problems and solutions
+ */
 export const yumEnv = {
     LANG: "en_US.UTF-8"
 }
 
+/**
+ * @deprecated The AbstractPackageManager (APM) feature will be removed in the future to more focus on the core problems and solutions
+ */
 export const ignoredErrMsgs: string[] = [
     "transaction completed",
     "base",
@@ -14,6 +20,11 @@ export const ignoredErrMsgs: string[] = [
     "warning",
 ]
 
+/**
+ * @deprecated The AbstractPackageManager (APM) feature will be removed in the future to more focus on the core problems and solutions
+ * @param data 
+ * @returns 
+ */
 export const ignoreMessageFilter: StreamDataMapper = (
     data: string
 ) => {
@@ -28,6 +39,11 @@ export const ignoreMessageFilter: StreamDataMapper = (
     return data
 }
 
+/**
+ * @deprecated The AbstractPackageManager (APM) feature will be removed in the future to more focus on the core problems and solutions
+ * @param exit 
+ * @returns 
+ */
 export const parseYumList = (exit: SshChannelExit): string[] => {
     const trimmedLines = filterEmpty(
         exit.out.split("\n")
@@ -36,6 +52,11 @@ export const parseYumList = (exit: SshChannelExit): string[] => {
     return packages
 }
 
+/**
+ * @deprecated The AbstractPackageManager (APM) feature will be removed in the future to more focus on the core problems and solutions
+ * @param exit 
+ * @returns 
+ */
 export const parseYumDescription = (exit: SshChannelExit): AbstractPackage => {
     const infoLines = exit.out.split("\n").filter((line) => line.includes(":"))
 
@@ -59,6 +80,12 @@ export const parseYumDescription = (exit: SshChannelExit): AbstractPackage => {
     }
 }
 
+/**
+ * @deprecated The AbstractPackageManager (APM) feature will be removed in the future to more focus on the core problems and solutions
+ * @param sshHost 
+ * @param cmdTimeoutMillis 
+ * @returns 
+ */
 export const initYumApm: ApmInit = (
     sshHost: SshHost,
     cmdTimeoutMillis?: number | undefined,

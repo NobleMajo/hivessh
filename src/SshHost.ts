@@ -282,7 +282,7 @@ export class SshHost {
     cachedApm: AbstractPackageManager | undefined
 
     /**
-     * 
+     * @deprecated Check your self
      * @description Checks one of the predefined package mangers is installed (apt, dnf, yum or a custom one) and returns a abstract interface for that package manager.
      * @param useCache The return value of this function get cached for the next function call. Set this to false to disable the caching.
      * @throws Throws an error if the package manager cant be detected.

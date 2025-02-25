@@ -400,8 +400,10 @@ export type SFTPPromiseWrapper = SFTPPromiseInterface & Omit<SFTPWrapper, keyof 
 export function createSFTPPromiseWrapper(
     sourceWrapper: SFTPWrapper
 ): SFTPPromiseWrapper {
-    const ret: any = sourceWrapper
+    // promisify methods
 
+    const ret: any = sourceWrapper
+    
     for (const voidMethod of voidMethods) {
         const altName = voidMethod + "2"
         ret[altName] = ret[voidMethod]

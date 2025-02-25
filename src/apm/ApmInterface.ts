@@ -1,6 +1,9 @@
 import { SshHost } from "../SshHost.js"
 import { Awaitable } from "../utils/base.js"
 
+/**
+ * @deprecated The AbstractPackageManager (APM) feature will be removed in the future to more focus on the core problems and solutions
+ */
 export interface AbstractPackageManager {
     type: string
     sshHost: SshHost

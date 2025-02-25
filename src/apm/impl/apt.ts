@@ -3,16 +3,25 @@ import { SshHost } from "../../SshHost.js"
 import { Awaitable, trimAll } from "../../utils/base.js"
 import { AbstractPackage, AbstractPackageManager, ApmInit } from "../apm.js"
 
+/**
+ * @deprecated The AbstractPackageManager (APM) feature will be removed in the future to more focus on the core problems and solutions
+ */
 export const aptEnv = {
     LANG: "en_US.UTF-8",
     DEBIAN_FRONTEND: "noninteractive",
 }
 
+/**
+ * @deprecated The AbstractPackageManager (APM) feature will be removed in the future to more focus on the core problems and solutions
+ */
 export const ignoredErrMsgs: string[] = [
     "debconf: unable to initialize frontend",
     "warning"
 ]
 
+/**
+ * @deprecated The AbstractPackageManager (APM) feature will be removed in the future to more focus on the core problems and solutions
+ */
 export const ignoreMessageFilter: StreamDataMapper = (
     data: string
 ) => {
@@ -27,6 +36,9 @@ export const ignoreMessageFilter: StreamDataMapper = (
     return data
 }
 
+/**
+ * @deprecated The AbstractPackageManager (APM) feature will be removed in the future to more focus on the core problems and solutions
+ */
 export const parsePackageList = (
     exit: SshChannelExit
 ): string[] => {
@@ -44,6 +56,11 @@ export const parsePackageList = (
         .filter((v) => v.length != 0)
 }
 
+/**
+ * @deprecated The AbstractPackageManager (APM) feature will be removed in the future to more focus on the core problems and solutions
+ * @param exit 
+ * @returns 
+ */
 export const parsePackageDescription = (
     exit: SshChannelExit
 ): AbstractPackage => {
@@ -98,6 +115,12 @@ export const parsePackageDescription = (
     }
 }
 
+/**
+ * @deprecated The AbstractPackageManager (APM) feature will be removed in the future to more focus on the core problems and solutions
+ * @param sshHost 
+ * @param cmdTimeoutMillis 
+ * @returns 
+ */
 export const initAptApm: ApmInit = (
     sshHost: SshHost,
     cmdTimeoutMillis?: number | undefined

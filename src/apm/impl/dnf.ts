@@ -3,10 +3,16 @@ import { SshHost } from "../../SshHost.js"
 import { Awaitable, filterEmpty, trimAll } from "../../utils/base.js"
 import { AbstractPackage, AbstractPackageManager, ApmInit } from "../apm.js"
 
+/**
+ * @deprecated The AbstractPackageManager (APM) feature will be removed in the future to more focus on the core problems and solutions
+ */
 export const dnfEnv = {
     LANG: "en_US.UTF-8"
 }
 
+/**
+ * @deprecated The AbstractPackageManager (APM) feature will be removed in the future to more focus on the core problems and solutions
+ */
 export const ignoredErrMsgs: string[] = [
     "transaction completed",
     "base",
@@ -14,6 +20,11 @@ export const ignoredErrMsgs: string[] = [
     "warning",
 ]
 
+/**
+ * @deprecated The AbstractPackageManager (APM) feature will be removed in the future to more focus on the core problems and solutions
+ * @param data 
+ * @returns 
+ */
 export const ignoreMessageFilter: StreamDataMapper = (
     data: string
 ) => {
@@ -28,6 +39,9 @@ export const ignoreMessageFilter: StreamDataMapper = (
     return data
 }
 
+/**
+ * @deprecated The AbstractPackageManager (APM) feature will be removed in the future to more focus on the core problems and solutions
+ */
 export const parseDnfList = (
     exit: SshChannelExit
 ): string[] => {
@@ -39,6 +53,11 @@ export const parseDnfList = (
     return packages
 }
 
+/**
+ * @deprecated The AbstractPackageManager (APM) feature will be removed in the future to more focus on the core problems and solutions
+ * @param exit 
+ * @returns 
+ */
 export const parseDnfDescription = (
     exit: SshChannelExit
 ): AbstractPackage => {
@@ -63,6 +82,13 @@ export const parseDnfDescription = (
         fields,
     }
 }
+
+/**
+ * @deprecated The AbstractPackageManager (APM) feature will be removed in the future to more focus on the core problems and solutions
+ * @param sshHost 
+ * @param cmdTimeoutMillis 
+ * @returns 
+ */
 
 export const initDnfApm: ApmInit = (
     sshHost: SshHost,

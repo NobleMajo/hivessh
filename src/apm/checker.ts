@@ -6,16 +6,25 @@ import { initAptApm } from "./impl/apt.js"
 import { initDnfApm } from "./impl/dnf.js"
 import { initYumApm } from "./impl/yum.js"
 
+/**
+ * @deprecated The AbstractPackageManager (APM) feature will be removed in the future to more focus on the core problems and solutions
+ */
 export type ApmInit = (
     sshHost: SshHost
 ) => Awaitable<AbstractPackageManager>
 
+/**
+ * @deprecated The AbstractPackageManager (APM) feature will be removed in the future to more focus on the core problems and solutions
+ */
 export type ApmChecker = (
     sshHost: SshHost,
 ) => Awaitable<AbstractPackageManager | undefined | void>
 
 export const apmChecker: ApmChecker[] = []
 
+/**
+ * @deprecated The AbstractPackageManager (APM) feature will be removed in the future to more focus on the core problems and solutions
+ */
 export async function getApm(
     sshHost: SshHost
 ): Promise<AbstractPackageManagerWrapper> {

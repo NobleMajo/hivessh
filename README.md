@@ -28,7 +28,7 @@ It wraps around the ssh2-library, providing a [promise-based approach](#promisif
     - [Execute at](#execute-at)
     - [Command existence checks](#command-existence-checks)
     - [Sftp](#sftp)
-  - [Abstract Package Manager](#abstract-package-manager)
+  - [Abstract Package Manager (deprecated)](#abstract-package-manager-deprecated)
     - [Custom apm](#custom-apm)
     - [Register package manager](#register-package-manager)
   - [Exec Session](#exec-session)
@@ -163,7 +163,9 @@ const exampleConfig: string = await myHost.sftp.readFile("/etc/example/config.ym
 You can find the types in the [npmjs.com build](https://www.npmjs.com/package/hivessh?activeTab=code) (at /dist/essentials/SftpPromiseWrapper.d.ts).
 You can also check out the `ssh2`-library [sftp docs](https://github.com/mscdex/ssh2/blob/master/SFTP.md) for more background.
 
-## Abstract Package Manager
+## Abstract Package Manager (deprecated)
+The AbstractPackageManager (APM) feature will be removed in the future to more focus on the core problems and solutions.
+
 The abstract package manager (aka `apm`) allows you to use `apt`, `dnf`, `yum` or a `custom implemented package manager` from one interface.
 The `apm` features are limited and generic, but you can upgrade your system and install, remove and list your packages.
 
