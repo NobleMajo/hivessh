@@ -1,5 +1,5 @@
 import { Server } from "net"
-import { Agent, fetch } from 'undici'
+import { Agent, fetch } from "undici"
 import { SshHost } from "../index.js"
 import { connectTestHosts, loadEnvVars, TestHost } from "./base_test.js"
 
