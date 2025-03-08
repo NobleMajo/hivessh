@@ -1,5 +1,7 @@
-import net, { type ListenOptions as ServerOptions } from "net";
-import { Client } from "ssh2";
+import afs from "fs/promises"
+import net, { type ListenOptions as ServerOptions } from "net"
+import type { Client } from "ssh2"
+import { pathType } from "./utils/base.js"
 
 export type LocalHostPortExtraOptions =
     Omit<
@@ -184,6 +186,10 @@ export function handleRemoteSocketOutTunnel(
     )
 }
 
+export type TunnelServer = net.Server & {
+    promise: Promise<net.Server>
+}
+
 /**
  * @experimental This function is experimental and may not be stable.
  * Creates a local server that tunnels incoming connections to a remote linux socket or host and port bind.
@@ -197,50 +203,84 @@ export function handleRemoteSocketOutTunnel(
  * 
  * @returns A promise that resolves to the created server that need to be closed.
  */
-export function tunnelOut(
+export async function tunnelOut(
     sshClient: Client,
     tunnelOptions: SshTunnelOutOptions,
-): Promise<net.Server> {
-    return new Promise<net.Server>((res, rej) => {
-        let server: net.Server
+): Promise<TunnelServer> {
+    const {
+        resolve,
+        reject,
+        promise,
+    } = Promise.withResolvers<net.Server>()
 
-        server = net.createServer()
-        server.on('error', (err) => {
-            server.close()
-            rej(err)
-        })
+    const server: TunnelServer = net.createServer() as any
+    server.promise = promise
 
-        server.on('connection',
-            isSshTunnelOutRemoteSocketOption(tunnelOptions) ?
-                (socket) => handleRemoteSocketOutTunnel(
-                    sshClient,
-                    server,
-                    socket,
-                    tunnelOptions,
-                ) :
-                (socket) => handleRemoteHostPortOutTunnel(
-                    sshClient,
-                    server,
-                    socket,
-                    tunnelOptions,
-                )
+    const options = createTunnelOutServerOptions(tunnelOptions)
+
+    server.on('error', reject)
+    server.on('connection', createOutConnectionHandler(
+        sshClient,
+        server,
+        tunnelOptions,
+    ))
+
+    if (options.path) {
+        const type = await pathType(options.path)
+
+        if (type !== "NONE") {
+            throw new Error(
+                "Path " + options.path +
+                " already exists and cant be used as unix socket path"
+            )
+        }
+
+        server.on('close', () => afs.rm(options.path))
+    }
+
+    server.on('close', () => resolve(server))
+
+    return new Promise<TunnelServer>(
+        (res) => server.listen(
+            options,
+            () => res(server),
         )
+    )
+}
 
-        const baseTunnelServerOptions =
-            isSshTunnelOutLocalSocketOption(tunnelOptions) ?
-                {
-                    path: tunnelOptions.localPath,
-                } :
-                {
-                    host: tunnelOptions.localHost,
-                    port: tunnelOptions.localPort,
-                }
+export function createTunnelOutServerOptions(
+    tunnelOptions: SshTunnelOutOptions,
+) {
+    if (isSshTunnelOutLocalSocketOption(tunnelOptions)) {
+        return {
+            path: tunnelOptions.localPath,
+        }
+    }
 
-        server.listen({
-            ...tunnelOptions,
-            ...baseTunnelServerOptions,
-        })
+    return {
+        host: tunnelOptions.localHost,
+        port: tunnelOptions.localPort,
+    }
+}
 
-        res(server)
-    })
+export function createOutConnectionHandler(
+    sshClient: Client,
+    server: net.Server,
+    tunnelOptions: SshTunnelOutOptions,
+): ((socket: net.Socket) => void) {
+    if (isSshTunnelOutRemoteSocketOption(tunnelOptions)) {
+        return (socket) => handleRemoteSocketOutTunnel(
+            sshClient,
+            server,
+            socket,
+            tunnelOptions,
+        )
+    }
+
+    return (socket) => handleRemoteHostPortOutTunnel(
+        sshClient,
+        server,
+        socket,
+        tunnelOptions,
+    )
 }
