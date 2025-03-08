@@ -124,8 +124,7 @@ export async function execSshChannel(
         typeof settings.timeoutMillis == "number" &&
         settings.timeoutMillis > 0
     ) {
-
-        channel.timeout = setTimeout(
+        const timeout = setTimeout(
             () => {
                 if (!channel.closed) {
                     channel.close(
@@ -138,9 +137,7 @@ export async function execSshChannel(
         )
         channel.once(
             "close",
-            () => clearTimeout(
-                channel.timeout
-            )
+            () => clearTimeout(timeout)
         )
     }
 
