@@ -1,5 +1,5 @@
-name: npm-publish
-run-name: NPM build, test and publish
+name: bun-publish
+run-name: Bun build, test and publish
 
 on:
   workflow_dispatch:
@@ -53,7 +53,7 @@ jobs:
         with:
           name: build-artifacts
 
-      - name: Prepare npm build
+      - name: Prepare release package
         run: |
           echo "//registry.npmjs.org/:_authToken=\${NODE_AUTH_TOKEN}" > .npmrc
           sed -i 's!./src!./dist!g' ./package.json

@@ -1,5 +1,5 @@
 name: auto-update
-run-name: Update npm dependencies
+run-name: Update bun dependencies
 
 on:
   schedule:
@@ -22,7 +22,7 @@ jobs:
       with:
         bun-version: latest
 
-    - name: Update npm dependencies
+    - name: Update bun dependencies
       run: |
         bun bump
         bun update
@@ -44,7 +44,7 @@ jobs:
           package*.json
           bun.lockb
 
-  publish-npm:
+  publish-bun:
     needs: update-deps
     runs-on: ubuntu-latest
     steps:
@@ -61,7 +61,7 @@ jobs:
         with:
           name: build-artifacts
 
-      - name: Prepare npm build
+      - name: Prepare release package
         run: |
           echo "//registry.npmjs.org/:_authToken=\${NODE_AUTH_TOKEN}" > .npmrc
           sed -i 's!./src!./dist!g' ./package.json
