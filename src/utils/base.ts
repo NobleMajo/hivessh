@@ -78,21 +78,18 @@ export async function pathType(
             return "FILE"
         } else if (stat.isDirectory()) {
             return "DIR"
-        } else {
-            return "NONE"
         }
-
     } catch (err: Error | any) {
         if (
-            err instanceof Error &&
-            (err as any).errno === -2 &&
-            (err as any).code === "ENOENT"
+            !(err instanceof Error) ||
+            (err as any).errno !== -2 ||
+            (err as any).code !== "ENOENT"
         ) {
-            return "NONE"
+            throw err
         }
-
-        throw err
     }
+
+    return "NONE"
 }
 
 export function trimAll(

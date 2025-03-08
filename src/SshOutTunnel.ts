@@ -153,18 +153,6 @@ export function handleRemoteSocketOutTunnel(
     socket: net.Socket,
     tunnelOptions: SshTunnelOutRemoteSocket
 ) {
-    const address = server.address() as net.AddressInfo
-    if (
-        typeof address.address != "string" ||
-        typeof address.family != "string" ||
-        typeof address.port != "number"
-    ) {
-        throw new Error(
-            "Invalid server socket address: " +
-            JSON.stringify(address, null, 2)
-        )
-    }
-
     sshClient.openssh_forwardOutStreamLocal(
         tunnelOptions.remotePath,
         (err, clientChannel) => {
@@ -228,14 +216,19 @@ export async function tunnelOut(
     if (options.path) {
         const type = await pathType(options.path)
 
-        if (type !== "NONE") {
+        if (
+            type === "FILE" ||
+            options.path.endsWith(".sock")
+        ) {
+            await afs.rm(options.path, { force: true })
+        } else if (type !== "NONE") {
             throw new Error(
                 "Path " + options.path +
                 " already exists and cant be used as unix socket path"
             )
         }
 
-        server.on('close', () => afs.rm(options.path))
+        server.on('close', () => afs.rm(options.path, { force: true }))
     }
 
     server.on('close', () => resolve(server))
