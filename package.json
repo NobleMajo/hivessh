@@ -1,6 +1,6 @@
 {
   "name": "hivessh",
-  "version": "1.5.1",
+  "version": "1.5.2",
   "description": "HiveSsh is an innovative library designed to streamline SSH2 connections and simplify task execution on Linux servers.",
   "type": "module",
   "main": "./dist/index.cjs",
@@ -61,12 +61,12 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "@types/ssh2": "^1.15.0",
-    "nodemon": "^3.1.0",
-    "typescript": "^5.4.3",
-    "undici": "^7.4.0"
+    "@types/ssh2": "^1.15.5",
+    "nodemon": "^3.1.10",
+    "typescript": "^5.9.2",
+    "undici": "^7.15.0"
   },
   "dependencies": {
-    "ssh2": "^1.15.0"
+    "ssh2": "^1.17.0"
   }
 }

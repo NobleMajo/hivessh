@@ -1,5 +1,4 @@
 import { Server } from "net"
-import { Agent, fetch } from "undici"
 import { SshHost } from "../index.js"
 import { connectTestHosts, loadEnvVars, TestHost } from "./base_test.js"
 
@@ -62,13 +61,11 @@ export async function tunnelDockerToSock(
         })
 
         const resp = await fetch(
-            "http://localhost/containers/json", {
-            dispatcher: new Agent({
-                connect: {
-                    socketPath: "/tmp/hivessh-test-" + test.id + ".sock"
-                }
-            })
-        })
+            "http://localhost/containers/json",
+            {
+                unix: "/tmp/hivessh-test-" + test.id + ".sock",
+            },
+        )
 
         if (resp.status !== 200) {
             throw new Error("Failed to fetch docker containers, status: " + resp.status)
