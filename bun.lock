@@ -4,12 +4,12 @@
     "": {
       "name": "hivessh",
       "dependencies": {
-        "ssh2": "^1.15.0",
+        "ssh2": "^1.17.0",
       },
       "devDependencies": {
-        "@types/ssh2": "^1.15.0",
-        "nodemon": "^3.1.0",
-        "typescript": "^5.4.3",
+        "@types/ssh2": "^1.15.5",
+        "nodemon": "^3.1.10",
+        "typescript": "^5.9.2",
         "undici": "^7.15.0",
       },
     },
