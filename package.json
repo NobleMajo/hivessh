@@ -12,6 +12,7 @@
     "require": "./dist/index.cjs"
   },
   "scripts": {
+    "bump": "bun --print \"const pkg = await Bun.file('package.json').json(); pkg.version = pkg.version.split('.').map((v, i) => i===2?+v+1:v).join('.'); await Bun.write('package.json', JSON.stringify(pkg, null, 2)); export default pkg.version\"",
     "start": "node --enable-source-maps dist/index.js",
     "build": "tsc",
     "testl": "tsc && node --env-file=.env --enable-source-maps dist/test/tunnel.test.js",
