@@ -14,8 +14,8 @@
   "scripts": {
     "bump": "bun --print \"const pkg = await Bun.file('package.json').json(); pkg.version = pkg.version.split('.').map((v, i) => i===2?+v+1:v).join('.'); await Bun.write('package.json', JSON.stringify(pkg, null, 2)); export default pkg.version\"",
     "start": "node --enable-source-maps dist/index.js",
-    "build": "bun run .github/build.ts",
-    "test": "bun test",
+    "build": "tsc",
+    "testl": "tsc && node --env-file=.env --enable-source-maps dist/test/tunnel.test.js",
     "exec": "tsc && node --enable-source-maps dist/index.js",
     "dev": "nodemon -w ./src --ext *.ts -x \"tsc && node --enable-source-maps dist/index.js\""
   },
@@ -62,9 +62,10 @@
   "license": "MIT",
   "devDependencies": {
     "@types/ssh2": "^1.15.5",
+    "bun-plugin-dts": "^0.3.0",
     "nodemon": "^3.1.10",
-    "typescript": "^5.9.2",
-    "undici": "^7.15.0"
+    "@types/bun": "^1.2.21",
+    "typescript": "^5.9.2"
   },
   "dependencies": {
     "ssh2": "^1.17.0"
