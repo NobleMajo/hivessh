@@ -24,9 +24,9 @@ jobs:
 
     - name: Update bun dependencies
       run: |
-        bun bump
-        bun update
-        bun run b
+        bun run bump
+        bun run update
+        bun run build
         bun run test --if-present
 
     - name: Commit and push changes

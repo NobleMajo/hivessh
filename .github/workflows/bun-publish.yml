@@ -24,7 +24,7 @@ jobs:
     - name: Update bun dependencies
       run: |
         bun i
-        bun run b
+        bun run build
         bun run test --if-present
 
     - name: Store build artifacts
