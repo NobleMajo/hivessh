@@ -282,7 +282,9 @@ export class SshHost {
     }
 
 
-
+    /**
+     * @deprecated
+     */
     cachedApm: AbstractPackageManager | undefined
 
     /**

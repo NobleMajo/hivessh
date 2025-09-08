@@ -62,9 +62,8 @@
   "license": "MIT",
   "devDependencies": {
     "@types/ssh2": "^1.15.5",
-    "bun-plugin-dts": "^0.3.0",
     "nodemon": "^3.1.10",
-    "@types/bun": "^1.2.21",
+    "undici": "^7.15.0",
     "typescript": "^5.9.2"
   },
   "dependencies": {
