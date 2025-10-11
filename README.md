@@ -201,11 +201,12 @@ for more background.
 
 ## Exec Session
 
-Sessions are available so that the PWD (process working
-directory) and environment do not have to be specified for each
-individual command. These sessions store these settings
-persistently across multiple executions and can even resolve
-relative paths.
+This Sessions are reusable command environments that can
+predefine the current working directory (cwd), user (via sudo),
+and environment variables for executing mutiple commands. They
+allow you to run multiple commands consistently without
+repeatedly specifying paths, users, or settings, making command
+execution cleaner and more maintainable.
 
 ```ts
 const session = host.session("/etc/example")
