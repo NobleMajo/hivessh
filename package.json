@@ -14,7 +14,7 @@
     "scripts": {
         "bump": "bun .github/bump.ts",
         "e2e": " bun test src/test/e2e",
-        "b": "bun x tsc"
+        "build": "bun x tsc"
     },
     "keywords": [
         "ssh",
