@@ -13,6 +13,7 @@
     },
     "scripts": {
         "bump": "bun .github/bump.ts",
+        "update": "bun update",
         "e2e": " bun test src/test/e2e",
         "build": "bun x tsc"
     },
