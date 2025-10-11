@@ -29,9 +29,6 @@ It wraps around the ssh2-library, providing a [promise-based approach](#promisif
     - [Execute at](#execute-at)
     - [Command existence checks](#command-existence-checks)
     - [Sftp](#sftp)
-  - [Abstract Package Manager (deprecated)](#abstract-package-manager-deprecated)
-    - [Custom apm](#custom-apm)
-    - [Register package manager](#register-package-manager)
   - [Exec Session](#exec-session)
 - [Technologies](#technologies)
 - [Contributing](#contributing)
@@ -163,44 +160,6 @@ const exampleConfig: string = await myHost.sftp.readFile("/etc/example/config.ym
 
 You can find the types in the [npmjs.com build](https://www.npmjs.com/package/hivessh?activeTab=code) (at /dist/essentials/SftpPromiseWrapper.d.ts).
 You can also check out the `ssh2`-library [sftp docs](https://github.com/mscdex/ssh2/blob/master/SFTP.md) for more background.
-
-## Abstract Package Manager (deprecated)
-The AbstractPackageManager (APM) feature will be removed in the future to more focus on the core problems and solutions.
-
-The abstract package manager (aka `apm`) allows you to use `apt`, `dnf`, `yum` or a `custom implemented package manager` from one interface.
-The `apm` features are limited and generic, but you can upgrade your system and install, remove and list your packages.
-
-```ts
-// upgrade all packages using the abstract package manager
-const apm = await myHost.getApm()
-await apm.updateCache()
-await apm.upgradeAll()
-
-// install a package using the abstract package manager
-await apm.install("git")
-```
-
-### Custom apm
-
-To create a custom `apm`, you need to implement the following typescript interface:
-[https://github.com/NobleMajo/hivessh/blob/main/src/apm/ApmInterface.ts](https://github.com/NobleMajo/hivessh/blob/main/src/apm/ApmInterface.ts)
-
-### Register package manager
-
-After implementing the custom package manager, you need to register it globally using a checker function:
-```ts
-import { apmChecker, AbstractPackageManager } from "./apm/apm.js"
-
-apmChecker.push(async (host) => {
-    if (await host.cmdExists("myapm")) {
-        const myApm: AbstractPackageManager = { ... }
-
-        return myApm
-    }
-})
-```
-
-This function is called when the `getApm()` is called and can return a package manager depending on the host.
 
 ## Exec Session
 Sessions are available so that the PWD (process working directory) and environment do not have to be specified for each individual command. These sessions store these settings persistently across multiple executions and can even resolve relative paths.
