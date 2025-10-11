@@ -227,13 +227,13 @@ session.env.NODE_ENV = "production"
 session.cd("/etc/someapp/dist")
 
 // execute my app with earlier defined environment
-session.exec("node myApp.js")
+session.exec("bun myApp.js")
 ```
 
 # Technologies
 HiveSsh is built using the following technologies:
 - **TypeScript**
-- **Node.js**
+- **Bun.js**
 - [`ssh2`-library](https://www.npmjs.com/package/ssh2)
 
 # Contributing
