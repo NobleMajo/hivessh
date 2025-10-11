@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, test } from "bun:test"
 import { OsRelease } from "../../essentials/OsRelease.js"
 import { SshHost } from "../../index.js"
-import { connectTestHosts, loadEnvVars, TestHost } from "./e2eTestBase.js"
+import { connectTestHosts, loadEnvVars, TestHost } from "./base.test.js"
 
 const toolsToCheck: string[] = [
     "ls",

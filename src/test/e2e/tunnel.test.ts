@@ -1,7 +1,17 @@
-import { afterEach, beforeEach, describe, expect, test } from "bun:test"
+import {
+    afterEach,
+    beforeEach,
+    describe,
+    expect,
+    test,
+} from "bun:test"
 import { Server } from "net"
 import { SshHost } from "../../index.js"
-import { connectTestHosts, loadEnvVars, TestHost } from "./e2eTestBase.js"
+import {
+    connectTestHosts,
+    loadEnvVars,
+    TestHost,
+} from "./base.test.js"
 
 let testSshHosts: [TestHost, SshHost][] = []
 
@@ -17,33 +27,55 @@ describe("e2e out tunneling", () => {
 
     afterEach(async () => {
         await Promise.all(
-            testSshHosts.map(
-                ([testHost, host]) => host.disconnect()
-            )
+            testSshHosts.map(([testHost, host]) =>
+                host.disconnect(),
+            ),
         )
     })
 
-    test("unix socket tunneling", async () => {
-        await Promise.all(
-            testSshHosts.map(async ([testHost, host], i) => {
-                const result = await tunnelDockerToPort(host, 54321 + i++)
+    test(
+        "unix socket tunneling",
+        async () => {
+            await Promise.all(
+                testSshHosts.map(
+                    async ([testHost, host], i) => {
+                        const result = await tunnelDockerToPort(
+                            host,
+                            54321 + i++,
+                        )
 
-                expect(result).resolves.toBeArray()
-                expect(result).resolves.not.toBeArrayOfSize(0)
-            })
-        )
-    }, 1000 * 20)
+                        expect(result).resolves.toBeArray()
+                        expect(
+                            result,
+                        ).resolves.not.toBeArrayOfSize(0)
+                    },
+                ),
+            )
+        },
+        1000 * 20,
+    )
 
-    test("address port bind tunneling", async () => {
-        await Promise.all(
-            testSshHosts.map(async ([testHost, host], i) => {
-                const result = await tunnelDockerToSock(testHost, host)
+    test(
+        "address port bind tunneling",
+        async () => {
+            await Promise.all(
+                testSshHosts.map(
+                    async ([testHost, host], i) => {
+                        const result = await tunnelDockerToSock(
+                            testHost,
+                            host,
+                        )
 
-                expect(result).resolves.toBeArray()
-                expect(result).resolves.not.toBeArrayOfSize(0)
-            })
-        )
-    }, 1000 * 20)
+                        expect(result).resolves.toBeArray()
+                        expect(
+                            result,
+                        ).resolves.not.toBeArrayOfSize(0)
+                    },
+                ),
+            )
+        },
+        1000 * 20,
+    )
 })
 
 export async function tunnelDockerToPort(
@@ -63,7 +95,7 @@ export async function tunnelDockerToPort(
             "http://127.0.0.1:" + port + "/containers/json",
             {
                 method: "GET",
-            }
+            },
         )
 
         expect(resp.status).toBeNumber()
@@ -83,7 +115,7 @@ export async function tunnelDockerToPort(
 
 export async function tunnelDockerToSock(
     test: TestHost,
-    sshHost: SshHost
+    sshHost: SshHost,
 ): Promise<any> {
     let server: Server | undefined = undefined
 
@@ -101,7 +133,7 @@ export async function tunnelDockerToSock(
                 headers: {
                     "Content-Type": "application/json",
                 },
-            }
+            },
         )
 
         expect(resp.status).toBeNumber()
@@ -111,7 +143,7 @@ export async function tunnelDockerToSock(
             return
         }
 
-        const json = await resp.json() as any
+        const json = (await resp.json()) as any
         if (!Array.isArray(json)) {
             console.error("Invalid json response: ", json)
             return
