@@ -1,66 +1,73 @@
-import * as path from "path";
-import { CmdChannelOptions, CmdExecOptions, SshChannel, SshChannelExit } from "./SshExec.js";
-import { SshHost } from "./SshHost.js";
+import * as path from "path"
+import {
+    CmdChannelOptions,
+    CmdExecOptions,
+    SshChannel,
+    SshChannelExit,
+} from "./SshExec.js"
+import { SshHost } from "./SshHost.js"
 
 export interface ProcessEnv {
-    TZ?: string,
-    PWD: string,
+    TZ?: string
+    PWD: string
     [key: string]: string | undefined
 }
 
 export class ExecSession {
     timeoutMillis?: number
+    /**
+     * @description Uses sudo before commands
+     * @deprecated Use asUser instead, set it to "root"
+     */
     sudo?: boolean
+    
+    /**
+     * @description Uses "sudo -nEu '<asUser>'" as command prefix
+     */
+    asUser?: string
 
-    constructor(
-        public host: SshHost,
-        public env: ProcessEnv,
-    ) { }
+    constructor(public host: SshHost, public env: ProcessEnv) {}
 
     clone(): ExecSession {
-        const session = new ExecSession(
-            this.host,
-            {
-                ...this.env
-            }
-        )
+        const session = new ExecSession(this.host, {
+            ...this.env,
+        })
         session.timeoutMillis = this.timeoutMillis
         session.sudo = this.sudo
+        session.asUser = this.asUser
         return session
     }
 
-    cd(
-        newPath: string,
-    ): void {
+    cd(newPath: string): void {
         if (!newPath.startsWith("/")) {
-            newPath = path.normalize(this.env.PWD + "/" + newPath)
+            newPath = path.normalize(
+                this.env.PWD + "/" + newPath,
+            )
         }
 
         this.env.PWD = newPath
     }
 
-    setEnv(
-        key: string,
-        value: string,
-    ): void {
+    setEnv(key: string, value: string): void {
         this.env[key] = value
     }
 
-    unsetEnv(
-        key: string,
-    ): void {
+    unsetEnv(key: string): void {
         if (key.toUpperCase() == "PWD") {
-            throw new Error("Cant unset process working directory (PWD) in a ExecSession")
+            throw new Error(
+                "Cant unset process working directory (PWD) in a ExecSession",
+            )
         }
 
         delete this.env[key]
     }
 
     parseCmdChannelOptions(
-        options?: CmdChannelOptions
+        options?: CmdChannelOptions,
     ): CmdChannelOptions {
         options = {
-            sudo: this.sudo,
+            asUser:
+                this.asUser ?? (this.sudo ? "root" : undefined),
             timeoutMillis: this.timeoutMillis,
             ...options,
             pwd: undefined,
@@ -75,20 +82,15 @@ export class ExecSession {
 
     execChannel(
         cmd: string,
-        options?: CmdChannelOptions
+        options?: CmdChannelOptions,
     ): Promise<SshChannel> {
-        options = this.parseCmdExecOptions(
-            options
-        )
+        options = this.parseCmdExecOptions(options)
 
-        return this.host.execChannel(
-            cmd,
-            options,
-        )
+        return this.host.execChannel(cmd, options)
     }
 
     parseCmdExecOptions(
-        options?: CmdExecOptions
+        options?: CmdExecOptions,
     ): CmdExecOptions {
         options = {
             sudo: this.sudo,
@@ -106,15 +108,10 @@ export class ExecSession {
 
     async exec(
         cmd: string,
-        options?: CmdExecOptions
+        options?: CmdExecOptions,
     ): Promise<SshChannelExit> {
-        options = this.parseCmdExecOptions(
-            options
-        )
+        options = this.parseCmdExecOptions(options)
 
-        return this.host.exec(
-            cmd,
-            options,
-        )
+        return this.host.exec(cmd, options)
     }
 }

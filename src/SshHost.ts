@@ -5,7 +5,6 @@ import { handleHops } from "./HostHop.js"
 import { CmdChannelOptions, CmdExecOptions, SshChannel, SshChannelExit, execSshChannel } from "./SshExec.js"
 import { SshHostOptions, SshHostSettings, loadSettings } from "./SshHostOptions.js"
 import { SshTunnelOutOptions, tunnelOut } from "./SshOutTunnel.js"
-import { AbstractPackageManager, getApm } from "./apm/apm.js"
 import { OsRelease, fetchOsRelease } from "./essentials/OsRelease.js"
 import { SFTPPromiseWrapper, createSFTPPromiseWrapper } from "./essentials/SftpPromiseWrapper.js"
 import { Awaitable, trimAll } from "./utils/base.js"
@@ -278,38 +277,6 @@ export class SshHost {
             this
         ).then((release) => {
             return this.cachedOsRelease = release
-        })
-    }
-
-
-    /**
-     * @deprecated
-     */
-    cachedApm: AbstractPackageManager | undefined
-
-    /**
-     * @deprecated Check your self
-     * @description Checks one of the predefined package mangers is installed (apt, dnf, yum or a custom one) and returns a abstract interface for that package manager.
-     * @param useCache The return value of this function get cached for the next function call. Set this to false to disable the caching.
-     * @throws Throws an error if the package manager cant be detected.
-     * @returns The abstract interface of the hosts package manager (if found).
-     */
-    getApm(
-        useCache: boolean = true,
-    ): Awaitable<AbstractPackageManager> {
-        this.throwCloseError()
-
-        if (
-            useCache &&
-            this.cachedApm
-        ) {
-            return this.cachedApm
-        }
-
-        return getApm(
-            this
-        ).then((apm) => {
-            return this.cachedApm = apm
         })
     }
 
