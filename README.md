@@ -27,22 +27,23 @@ persistent [exec sessions](#exec-session).
 ---
 
 - [HiveSsh](#hivessh)
-- [SSH2](#ssh2)
-- [Key features](#key-features)
-- [Requirements](#requirements)
-- [Getting started](#getting-started)
-  - [Promisified](#promisified)
-    - [Execute](#execute)
-    - [Execute at](#execute-at)
-    - [Command existence checks](#command-existence-checks)
+  - [SSH2](#ssh2)
+  - [Key features](#key-features)
+  - [Requirements](#requirements)
+  - [Getting started](#getting-started)
+  - [Examples](#examples)
+    - [Connect 3 Hosts](#connect-3-hosts)
+    - [Execute Command](#execute-command)
+    - [Run At Path](#run-at-path)
+    - [Command Exists?](#command-exists)
     - [Sftp](#sftp)
   - [Exec Session](#exec-session)
-- [Technologies](#technologies)
-- [Contributing](#contributing)
-- [License](#license)
-- [Disclaimer](#disclaimer)
+  - [Technologies](#technologies)
+  - [Contributing](#contributing)
+  - [License](#license)
+  - [Disclaimer](#disclaimer)
 
-# SSH2
+## SSH2
 
 The term `ssh2` has two meanings here, the
 `secure shell protocol` and the `npm library`. When referring to
@@ -53,33 +54,42 @@ HiveSsh is a wrapper library of the `ssh2`-library with
 additional features and promise-based task execution instead of
 a callback function approach.
 
-# Key features
+## Key features
 
 HiveSsh provides the following key features:
 
 -   **All-Distributions**: SSH2 and SFTP operations for all
     Linux servers
 -   **Promisified**: Promise-based operations for ease of use
--   **AbstractPackageManager**: Built-in abstract package
-    manager with support for apt, dnf, and yum, with additional
-    configurability
 -   **Exec**: Command execution utilities for event or
     promise-based error handling and output parsing, filtering,
     and mapping
 
-# Requirements
+## Requirements
 
-HiveSsh requires the following server environments:
+HiveSsh is designed for the following server environment:
 
 -   **SSH2 server**
--   **SFTP support**
 -   **Linux distribution**
+-   **SFTP support**
 
-# Getting started
+## Getting started
+
+```sh
+bun i hivessh
+```
+
+or
 
 ```sh
 npm i hivessh
 ```
+
+## Examples
+
+### Connect 3 Hosts
+
+Promise based connection to ssh hosts:
 
 ```ts
 import { SshHost } from "hivelib"
@@ -112,15 +122,11 @@ const myHost = await SshHost.connect({
 })
 ```
 
-Here are some using examples:
-
-## Promisified
-
-### Execute
+### Execute Command
 
 After connecting a `SshHost`, you can use the promisified
 execution (and other asset features) directly on the `SshHost`
-instance.
+instance:
 
 ```ts
 // check files in user home dir
@@ -128,7 +134,7 @@ const homeDirFiles = await myHost.exec("ls -al")
 console.log("Home dir files:\n", homeDirFiles.out)
 ```
 
-### Execute at
+### Run At Path
 
 You can also execute commands on absolut path:
 
@@ -137,7 +143,7 @@ const etcDirFiles = await myHost.exec("ls -al", { pwd: "/etc" })
 console.log("Etc files: ", etcDirFiles.out)
 ```
 
-### Command existence checks
+### Command Exists?
 
 Get the hosts public ip address:
 
@@ -236,7 +242,7 @@ session.cd("/etc/someapp/dist")
 session.exec("bun myApp.js")
 ```
 
-# Technologies
+## Technologies
 
 HiveSsh is built using the following technologies:
 
@@ -244,20 +250,20 @@ HiveSsh is built using the following technologies:
 -   **Bun.js**
 -   [`ssh2`-library](https://www.npmjs.com/package/ssh2)
 
-# Contributing
+## Contributing
 
 Contributions to this project are welcome!  
 Interested users can follow the guidelines provided in the
 [CONTRIBUTING.md](CONTRIBUTING.md) file to contribute to the
 project and help improve its functionality and features.
 
-# License
+## License
 
 This project is licensed under the [MIT](LICENSE) license, which
 provides users with the flexibility and freedom to use and
 modify the software according to their needs.
 
-# Disclaimer
+## Disclaimer
 
 This project is provided "as is".  
 Users are advised to consult the accompanying licence for
